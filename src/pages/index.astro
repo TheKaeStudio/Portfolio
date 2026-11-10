@@ -10,9 +10,95 @@ import Works from '@/components/Works.astro';
 import About from '@/components/About.astro';
 import Contact from '@/components/Contact.astro';
 import Footer from '@/components/Footer.astro';
+import { site } from '@/data/site';
+import { getProjects } from '@/data/projects';
+import sky from '@/assets/hero/sky.jpg';
+
+const home = new URL('/', Astro.site).href;
+const projects = await getProjects();
+
+const jsonLd = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    '@id': `${home}#website`,
+    url: home,
+    name: site.name,
+    description: site.description,
+    inLanguage: 'fr-BE',
+    publisher: { '@id': `${home}#studio` },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ProfessionalService',
+    '@id': `${home}#studio`,
+    name: site.name,
+    url: home,
+    logo: new URL('/icon-512.png', Astro.site).href,
+    image: new URL(sky.src, Astro.site).href,
+    description: site.description,
+    email: site.email,
+    telephone: site.phone.replace(/\s/g, ''),
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: site.location.city,
+      addressRegion: site.location.region,
+      addressCountry: site.location.countryCode,
+    },
+    geo: {
+      '@type': 'GeoCoordinates',
+      latitude: site.location.latitude,
+      longitude: site.location.longitude,
+    },
+    areaServed: [
+      { '@type': 'Country', name: 'Belgique' },
+      { '@type': 'Country', name: 'France' },
+    ],
+    knowsLanguage: ['fr'],
+    founder: { '@id': `${home}#founder` },
+    sameAs: site.socials.map((s) => s.href),
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: 'Services',
+      itemListElement: ['Design UI/UX', 'Développement web', 'Applications mobiles', 'Logiciels sur mesure', 'Montage vidéo', 'Graphisme et identité visuelle'].map(
+        (name) => ({ '@type': 'Offer', itemOffered: { '@type': 'Service', name } }),
+      ),
+    },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    '@id': `${home}#founder`,
+    name: site.founder.name,
+    givenName: site.founder.givenName,
+    familyName: site.founder.familyName,
+    jobTitle: site.founder.jobTitle,
+    url: home,
+    email: site.email,
+    worksFor: { '@id': `${home}#studio` },
+    alumniOf: { '@type': 'CollegeOrUniversity', name: 'Haute École de la Province de Liège (HEPL)' },
+    award: [
+      'Prix du meilleur projet étudiant, Hackathon Citizens of Wallonia 2023',
+      'Nommé pour le prix de l’UI et le prix de l’UX, Hackathon Citizens of Wallonia 2025',
+    ],
+    knowsAbout: ['Design UI/UX', 'Développement full-stack', 'Angular', 'Applications mobiles', 'Montage vidéo', 'Graphisme'],
+    sameAs: site.socials.map((s) => s.href),
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: 'Réalisations',
+    itemListElement: projects.map((project, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      url: new URL(`/realisations/${project.id}`, Astro.site).href,
+      name: project.data.title,
+    })),
+  },
+];
 ---
 
-<Base>
+<Base jsonLd={jsonLd}>
   <Header slot="header" overHero />
   <Hero />
   <Intro />
