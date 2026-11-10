@@ -1,16 +1,36 @@
+
 ---
 import type { ImageMetadata } from 'astro';
 import { Image } from 'astro:assets';
 
 interface Props {
-  src: ImageMetadata;
+  src: ImageMetadata | string;
+  type?: 'image' | 'video';
 }
 
-const { src } = Astro.props;
+const { src, type = 'image' } = Astro.props;
 ---
 
 <div class="vignette" aria-hidden="true">
-  <Image src={src} alt="" widths={[400, 600, 900, 1200]} sizes="(max-width: 720px) 90vw, 600px" loading="lazy" />
+  {type === 'video' ? (
+    <video
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="metadata"
+    >
+      <source src={typeof src === 'string' ? src : src.src} type="video/webm" />
+    </video>
+  ) : (
+    <Image
+      src={src as ImageMetadata}
+      alt=""
+      widths={[400, 600, 900, 1200]}
+      sizes="(max-width: 720px) 90vw, 600px"
+      loading="lazy"
+    />
+  )}
 </div>
 
 <style>
@@ -20,8 +40,11 @@ const { src } = Astro.props;
     pointer-events: none;
   }
 
-  .vignette :global(img) {
+  .vignette :global(img),
+  .vignette video {
+    display: block;
     width: 100%;
+    height: auto;
     animation: vignette-float 9s var(--ease-in-out) infinite alternate;
   }
 

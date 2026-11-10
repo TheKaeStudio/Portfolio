@@ -15,9 +15,9 @@ import { getProjects } from '@/data/projects';
 import sky from '@/assets/hero/sky.jpg';
 import portrait from '@/assets/about/portrait.jpg';
 import Vignette from '@/components/Vignette.astro';
-import clientsArt from '@/assets/sections/clients.jpg';
-import servicesArt from '@/assets/sections/services.jpg';
-import worksArt from '@/assets/sections/works.jpg';
+import clientsArt from '@/assets/sections/clients.webm';
+import servicesArt from '@/assets/sections/services.webm';
+import worksArt from '@/assets/sections/works.webm';
 
 const home = new URL('/', Astro.site).href;
 const projects = await getProjects();
@@ -109,14 +109,14 @@ const jsonLd = [
   <Hero />
   <Intro />
   <Clients>
-    <Vignette slot="visual" src={clientsArt} />
+    <Vignette slot="visual" src={clientsArt} type='video'/>
   </Clients>
   <Services>
-    <Vignette slot="visual" src={servicesArt} />
+    <Vignette slot="visual" src={servicesArt} type='video' />
   </Services>
   <Philosophy />
   <Works>
-    <Vignette slot="visual" src={worksArt} />
+    <Vignette slot="visual" src={worksArt} type='video' />
   </Works>
   <About />
   <Contact />
