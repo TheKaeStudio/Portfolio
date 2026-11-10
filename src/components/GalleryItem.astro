@@ -48,7 +48,7 @@ const sizes = {
   }
   {
     frame === 'none' && (
-      <div class="plain">
+      <div class="plain" style={`max-width: ${src.width}px`}>
         <Image src={src} alt={alt} widths={widths} sizes={sizes} loading="lazy" />
       </div>
     )
@@ -161,9 +161,7 @@ const sizes = {
 
   .phone :global(img) {
     width: 100%;
-    aspect-ratio: 390 / 760;
-    object-fit: cover;
-    object-position: top;
+    height: auto;
     border-radius: 37px;
   }
 
@@ -177,6 +175,11 @@ const sizes = {
     border-radius: 12px;
     background: #000;
     transform: translateX(-50%);
+  }
+
+  .plain {
+    width: 100%;
+    margin-inline: auto;
   }
 
   .plain :global(img) {
