@@ -22,6 +22,9 @@ if (dialog) {
   const worldEl = dialog.querySelector<HTMLElement>('[data-tree-world]')!;
   const panel = dialog.querySelector<HTMLElement>('[data-tree-panel]')!;
   const canvas = dialog.querySelector<HTMLCanvasElement>('[data-tree-sky]')!;
+  const bar = dialog.querySelector<HTMLElement>('.tree__bar')!;
+  const focusNav = dialog.querySelector<HTMLElement>('.tree__focus')!;
+  const legend = dialog.querySelector<HTMLElement>('.tree__legend')!;
   const ctx = canvas.getContext('2d')!;
   const fullBox: Box = JSON.parse(worldEl.dataset.box!);
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -69,14 +72,15 @@ if (dialog) {
 
   const visibleArea = () => {
     const rect = viewport.getBoundingClientRect();
+    const legendSpace = rect.bottom - legend.getBoundingClientRect().top;
     if (compact.matches) {
-      const top = 116;
-      const bottom = panelOpen() ? panel.offsetHeight + 12 : 104;
+      const top = focusNav.getBoundingClientRect().bottom - rect.top + 12;
+      const bottom = panelOpen() ? panel.offsetHeight + 12 : legendSpace + 40;
       return { left: 12, top, width: rect.width - 24, height: rect.height - top - bottom };
     }
-    const top = 150;
+    const top = Math.max(bar.getBoundingClientRect().bottom, focusNav.getBoundingClientRect().bottom) - rect.top + 16;
     const right = panelOpen() ? panel.offsetWidth + 60 : 20;
-    return { left: 20, top, width: rect.width - right - 20, height: rect.height - top - 110 };
+    return { left: 20, top, width: rect.width - right - 20, height: rect.height - top - legendSpace - 20 };
   };
 
   const fit = (box: Box, animate = true) => {

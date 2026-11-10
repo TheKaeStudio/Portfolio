@@ -678,7 +678,8 @@ const fullBox = contentBounds;
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    padding: clamp(20px, 3vw, 32px) clamp(20px, 3vw, 36px) 0;
+    padding: calc(clamp(20px, 3vw, 32px) + var(--safe-top)) max(clamp(20px, 3vw, 36px), var(--safe-right)) 0
+      max(clamp(20px, 3vw, 36px), var(--safe-left));
     pointer-events: none;
   }
 
@@ -790,7 +791,7 @@ const fullBox = contentBounds;
   .tree__focus {
     position: absolute;
     left: 50%;
-    top: clamp(24px, 3vw, 34px);
+    top: calc(clamp(24px, 3vw, 34px) + var(--safe-top));
     display: flex;
     gap: 6px;
     padding: 5px;
@@ -826,7 +827,7 @@ const fullBox = contentBounds;
   .tree__hint {
     position: absolute;
     left: 50%;
-    top: calc(clamp(24px, 3vw, 34px) + 58px);
+    top: calc(clamp(24px, 3vw, 34px) + 58px + var(--safe-top));
     font-family: var(--font-mono);
     font-size: 17px;
     color: rgb(190 210 255 / 0.55);
@@ -837,8 +838,8 @@ const fullBox = contentBounds;
 
   .tree__panel {
     position: absolute;
-    top: 104px;
-    right: clamp(20px, 3vw, 36px);
+    top: calc(104px + var(--safe-top));
+    right: max(clamp(20px, 3vw, 36px), var(--safe-right));
     bottom: 96px;
     width: min(380px, calc(100% - 40px));
     padding: 28px;
@@ -1049,7 +1050,7 @@ const fullBox = contentBounds;
 
   @media (max-width: 760px) {
     .tree__bar {
-      padding: 16px 16px 0 20px;
+      padding: calc(16px + var(--safe-top)) max(16px, var(--safe-right)) 0 max(20px, var(--safe-left));
     }
 
     .tree__eyebrow,
@@ -1068,7 +1069,7 @@ const fullBox = contentBounds;
     }
 
     .tree__focus {
-      top: 70px;
+      top: calc(70px + var(--safe-top));
       left: 0;
       right: 0;
       gap: 6px;

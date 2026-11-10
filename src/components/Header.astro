@@ -37,8 +37,8 @@ const home = Astro.url.pathname === '/' ? '' : '/';
     align-items: center;
     justify-content: space-between;
     gap: 16px;
-    height: var(--header-h);
-    padding: 0 var(--gutter);
+    height: var(--header-total);
+    padding: var(--safe-top) max(var(--gutter), var(--safe-right)) 0 max(var(--gutter), var(--safe-left));
     color: var(--ink);
     transition: color 0.5s var(--ease-out);
   }
@@ -46,11 +46,16 @@ const home = Astro.url.pathname === '/' ? '' : '/';
   .header::before {
     content: '';
     position: absolute;
-    inset: 0 0 -24px;
+    inset: -80px 0 -24px;
     z-index: -1;
-    background: linear-gradient(to bottom, rgb(255 255 255 / 0.92), rgb(255 255 255 / 0.6) 55%, rgb(255 255 255 / 0));
+    background: linear-gradient(
+      to bottom,
+      #fff calc(80px + var(--safe-top) + var(--header-h) * 0.5),
+      rgb(255 255 255 / 0.82) calc(80px + var(--header-total)),
+      rgb(255 255 255 / 0)
+    );
     backdrop-filter: blur(6px);
-    mask-image: linear-gradient(to bottom, #000 60%, transparent);
+    mask-image: linear-gradient(to bottom, #000 calc(100% - 24px), transparent);
     opacity: 1;
     transition: opacity 0.5s var(--ease-out);
     pointer-events: none;
