@@ -51,7 +51,7 @@ const coords = `${latitude.toFixed(4)}° N, ${longitude.toFixed(4)}° E`;
     min-height: max(640px, 100svh);
     overflow: hidden;
     color: #fff;
-    background: linear-gradient(180deg, var(--indigo-800), var(--indigo-500) 60%, #fff);
+    background: linear-gradient(180deg, var(--blue-800), var(--blue-500) 60%, #fff);
   }
 
   .hero__sky {
@@ -95,7 +95,7 @@ const coords = `${latitude.toFixed(4)}° N, ${longitude.toFixed(4)}° E`;
 
   .hero__emblem :global(.hero__mark) {
     position: relative;
-    filter: drop-shadow(0 0 18px rgb(255 255 255 / 0.55)) drop-shadow(0 10px 40px rgb(42 34 168 / 0.6));
+    filter: drop-shadow(0 0 18px rgb(255 255 255 / 0.55)) drop-shadow(0 10px 40px rgb(0 88 210 / 0.6));
     animation: float 7s var(--ease-in-out) infinite alternate;
   }
 
@@ -125,11 +125,11 @@ const coords = `${latitude.toFixed(4)}° N, ${longitude.toFixed(4)}° E`;
   .hero__the,
   .hero__name,
   .hero__subtitle {
-    background: linear-gradient(180deg, #ffffff 15%, #dcd9ff 85%);
+    background: linear-gradient(180deg, #ffffff 15%, #d6ecff 85%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
-    filter: drop-shadow(0 6px 28px rgb(29 23 115 / 0.35));
+    filter: drop-shadow(0 6px 28px rgb(6 42 115 / 0.35));
   }
 
   .hero__the {
@@ -147,7 +147,7 @@ const coords = `${latitude.toFixed(4)}° N, ${longitude.toFixed(4)}° E`;
     margin-top: clamp(10px, 1.6vw, 22px);
     font-size: clamp(26px, 3.6vw, 52px);
     letter-spacing: -0.01em;
-    filter: drop-shadow(0 2px 16px rgb(29 23 115 / 0.55));
+    filter: drop-shadow(0 2px 16px rgb(6 42 115 / 0.55));
   }
 
   .hero__footer {
@@ -159,7 +159,7 @@ const coords = `${latitude.toFixed(4)}° N, ${longitude.toFixed(4)}° E`;
     font-family: var(--font-mono);
     font-size: 1rem;
     letter-spacing: 0.04em;
-    color: var(--indigo-700);
+    color: var(--blue-700);
     opacity: 0.7;
   }
 
