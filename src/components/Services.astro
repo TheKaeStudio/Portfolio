@@ -1,0 +1,145 @@
+---
+import SectionHead from '@/components/SectionHead.astro';
+import { servicePills, services } from '@/data/services';
+---
+
+<section class="section services" aria-labelledby="services-title">
+  <slot name="visual" />
+  <div class="column centered">
+    <SectionHead index="03" label="Mes services" id="services-title" />
+    <p class="statement" data-reveal>
+      La sélectivité est ma force : si je ne peux pas le faire à un niveau d’excellence, je ne le fais pas.
+    </p>
+  </div>
+
+  <ul class="services__pills" role="list" aria-label="Services proposés">
+    {
+      servicePills.map((pill) => (
+        <li>
+          <a class="pill pill--lg" href={`#realisations`} data-filter-link={pill.category}>
+            {pill.label}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+
+  <div class="column centered">
+    <p class="statement services__closing" data-reveal>
+      Je ne prends que les projets que je peux livrer au plus haut niveau. <span class="soft">Pas de demi-mesure, pas de compromis.</span>
+    </p>
+  </div>
+
+  <div class="services__list container">
+    {
+      services.map((service, i) => (
+        <article class="service">
+          <span class="service__index" aria-hidden="true">
+            {String(i + 1).padStart(2, '0')}
+          </span>
+          <h3 class="service__title">{service.title}</h3>
+          <p class="service__text">{service.description}</p>
+          <a class="service__link" href="#realisations" data-filter-link={service.category}>
+            Voir les projets
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M7 17 17 7M9 7h8v8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </a>
+        </article>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .services__pills {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    max-width: 44rem;
+    margin: clamp(40px, 6vw, 64px) auto;
+    padding: 0 var(--gutter);
+    list-style: none;
+  }
+
+  .services__closing {
+    margin-bottom: clamp(64px, 9vw, 120px);
+  }
+
+  .services__list {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--line);
+  }
+
+  .service {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: clamp(24px, 2.6vw, 36px);
+    background: var(--paper);
+    transition: background-color 0.4s var(--ease-out);
+  }
+
+  .service:hover {
+    background: #fafaff;
+  }
+
+  .service__index {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    color: var(--muted-2);
+  }
+
+  .service__title {
+    margin-top: 18px;
+    font-family: var(--font-serif);
+    font-variation-settings: 'opsz' 144;
+    font-size: clamp(1.5rem, 2vw, 1.875rem);
+    font-weight: 400;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+
+  .service__text {
+    flex: 1;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--ink-60);
+  }
+
+  .service__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--indigo-700);
+  }
+
+  .service__link svg {
+    transition: transform 0.4s var(--ease-out);
+  }
+
+  .service__link:hover svg {
+    transform: translate(2px, -2px);
+  }
+
+  @media (max-width: 1000px) {
+    .services__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 560px) {
+    .services__list {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
