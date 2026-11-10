@@ -13,7 +13,7 @@ export const timeline: { title: string; entries: TimelineEntry[] }[] = [
       {
         period: 'Depuis 2023',
         title: 'Développeur full-stack & designer UI/UX',
-        place: 'mk-it, Verviers',
+        place: 'MkIT, Verviers',
         description: 'Sites web, outils internes, interfaces et contenus pour les réseaux sociaux.',
       },
       {

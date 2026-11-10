@@ -1,13 +1,13 @@
 ---
-title: mk-it
-client: mk-it
+title: MkIT
+client: MkIT
 summary: Reels et visuels pour les réseaux sociaux d’une entreprise informatique de Verviers, avec une ligne graphique noire et bleue.
 categories: [montage-video, graphisme]
 deliverables: [Reels, Posts, Ligne éditoriale]
 year: 2023 – 2026
 order: 8
 cover: ./cover.jpg
-coverAlt: Reels et posts mk-it sur fond sombre et bleu
+coverAlt: Reels et posts MkIT sur fond sombre et bleu
 links:
   - label: Instagram
     href: https://www.instagram.com/mkitbe/
@@ -43,7 +43,7 @@ gallery:
 
 ## Le contexte
 
-mk-it est une entreprise informatique de Verviers : réparation de PC, sites web, Microsoft 365 et cybersécurité pour les PME. J’y travaille comme développeur full-stack et designer UI/UX depuis 2023, et je gère aussi une partie de sa communication.
+MkIT est une entreprise informatique de Verviers : réparation de PC, sites web, Microsoft 365 et cybersécurité pour les PME. J’y travaille comme développeur full-stack et designer UI/UX depuis 2023, et je gère aussi une partie de sa communication.
 
 ## Ma mission
 
