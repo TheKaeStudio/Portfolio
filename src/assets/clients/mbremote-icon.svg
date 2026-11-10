@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 233.68 168.4">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: url(#radial-gradient);
+      }
+
+      .cls-2 {
+        fill: url(#linear-gradient);
+      }
+    </style>
+    <radialGradient id="radial-gradient" cx="88.96" cy="84.2" fx="73.22" fy="84.2" r="141.37" gradientUnits="userSpaceOnUse">
+      <stop offset=".2" stop-color="#0c3f40"/>
+      <stop offset="1" stop-color="#3ff0a9"/>
+    </radialGradient>
+    <linearGradient id="linear-gradient" x1="0" y1="84.2" x2="67.02" y2="84.2" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#3ff0a9" stop-opacity="0"/>
+      <stop offset="1" stop-color="#3ff0a9"/>
+    </linearGradient>
+  </defs>
+  <g id="MBRemoteLogo">
+    <g id="Icon_Only" data-name="Icon Only">
+      <path id="CylinderInside" class="cls-1" d="M231.93,84.2c0,45.4-36.8,82.21-82.21,82.21-23.82,0-45.28-10.14-60.29-26.34,20.37-9.6,34.46-30.32,34.46-54.34s-15-46.06-36.42-55.23C102.55,13.05,124.85,1.99,149.72,1.99c45.41,0,82.21,36.81,82.21,82.21Z"/>
+      <path id="CylinderOutside" class="cls-2" d="M149.48,0c-8.51,0-16.71,1.27-24.45,3.62h0S44.68,26.59,44.68,26.59l-.12.03C18.83,33.99,0,57.68,0,85.78s19.28,52.34,45.47,59.4h.04s2.39.6,2.39.6l81.85,20.31v-.02c6.33,1.53,12.93,2.33,19.72,2.33,46.51,0,84.2-37.7,84.2-84.2S195.99,0,149.48,0ZM149.48,164.04c-6.45,0-12.72-.77-18.73-2.21-23.54-5.66-43.02-21.75-53.28-43.11-5.02-10.44-7.83-22.15-7.83-34.52,0-16.12,4.77-31.12,12.99-43.65,9.51-14.56,23.67-25.82,40.37-31.67,8.28-2.92,17.18-4.5,26.47-4.5,44.09,0,79.84,35.74,79.84,79.83s-35.75,79.84-79.84,79.84Z"/>
+    </g>
+  </g>
+</svg>
