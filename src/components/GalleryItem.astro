@@ -70,16 +70,18 @@ const sizes = {
     grid-column: span 2;
   }
 
-  .gallery-item--full.gallery-item--browser {
+  .gallery-item--browser,
+  .gallery-item--phone {
+    padding: clamp(16px, 4vw, 56px);
+    border-radius: var(--radius-lg);
+    background: var(--paper-2);
+    box-shadow: 0 0 0 1px var(--line) inset;
+  }
+
+  .gallery-item--full .browser {
     width: 100%;
     max-width: 1040px;
     justify-self: center;
-  }
-
-  .gallery-item--phone {
-    padding: clamp(24px, 3vw, 40px);
-    border-radius: var(--radius-lg);
-    background: radial-gradient(120% 100% at 50% 0%, var(--sky-50), var(--paper-2));
   }
 
   .browser {
