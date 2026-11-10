@@ -5,7 +5,7 @@ summary: Identité visuelle complète et site web pour un Employer of Record int
 categories: [ui-ux, developpement, graphisme]
 deliverables: [Identité visuelle, Charte graphique, Site web]
 year: '2025'
-order: 2
+order: 3
 cover: ./cover.jpg
 coverAlt: Le site MBRemote sur ordinateur et sur mobile, avec l’anneau vert de la marque
 links:
