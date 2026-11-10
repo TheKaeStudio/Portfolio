@@ -1,5 +1,6 @@
 export interface TimelineEntry {
   period: string;
+  award?: 'winner' | 'nominee';
   title: string;
   place: string;
   description?: string;
@@ -28,19 +29,21 @@ export const timeline: { title: string; entries: TimelineEntry[] }[] = [
     title: 'Distinctions',
     entries: [
       {
-        period: '2025',
-        title: 'Nommé pour le prix de l’UI et le prix de l’UX',
-        place: 'Hackathon Citizens of Wallonia',
-        description: 'Projet Don’t : conception de l’interface et de l’expérience utilisateur.',
-        link: { label: 'Voir Don’t sur GitHub', href: 'https://github.com/NiteChill/dont-frontend-js' },
-      },
-      {
         period: 'Mars 2023',
+        award: 'winner',
         title: 'Prix du meilleur projet étudiant',
         place: 'Hackathon Citizens of Wallonia',
         description:
-          'Projet Token : une plateforme qui valorise les associations de Verviers grâce à une monnaie d’entraide.',
+          'Projet Token\u00a0: une plateforme qui valorise les associations de Verviers grâce à une monnaie d’entraide.',
         link: { label: 'Voir Token sur GitHub', href: 'https://github.com/FullCycleConceptaria/token' },
+      },
+      {
+        period: '2025',
+        award: 'nominee',
+        title: 'Nommé pour le prix de l’UI et le prix de l’UX',
+        place: 'Hackathon Citizens of Wallonia',
+        description: 'Projet Don’t\u00a0: conception de l’interface et de l’expérience utilisateur.',
+        link: { label: 'Voir Don’t sur GitHub', href: 'https://github.com/NiteChill/dont-frontend-js' },
       },
     ],
   },
