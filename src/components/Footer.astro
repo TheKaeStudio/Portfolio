@@ -1,0 +1,23 @@
+---
+import { site } from '@/data/site';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <p>{site.name} · {site.tagline} © {year}</p>
+  <p class="footer__place">{site.location.city}, {site.location.country}</p>
+</footer>
+
+<style>
+  .footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 6px 20px;
+    padding: 28px var(--gutter) 36px;
+    font-size: 0.8125rem;
+    color: var(--muted-2);
+    text-align: center;
+  }
+</style>

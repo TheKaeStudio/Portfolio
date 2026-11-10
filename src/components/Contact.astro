@@ -1,0 +1,119 @@
+---
+import SectionHead from '@/components/SectionHead.astro';
+import LogoMark from '@/components/LogoMark.astro';
+import { site } from '@/data/site';
+
+const subject = encodeURIComponent('Nouveau projet avec The Kae Studio');
+---
+
+<section class="section contact" id="contact" aria-labelledby="contact-title">
+  <slot name="visual" />
+  <div class="column centered">
+    <SectionHead index="07" label="Envie de travailler ensemble ?" id="contact-title" />
+    <p class="statement" data-reveal>
+      Un travail clair, avec une touche de magie, <span class="soft">pour des projets qui comptent.</span>
+    </p>
+    <a class="pill pill--dark pill--lg contact__cta" href={`mailto:${site.email}?subject=${subject}`}>
+      Me contacter
+    </a>
+  </div>
+
+  <div class="contact__card">
+    <LogoMark size={40} class="contact__mark" />
+    <button class="pill pill--lg contact__email" type="button" data-copy={site.email} aria-describedby="copy-status">
+      <span data-copy-label>{site.email}</span>
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <rect x="9" y="9" width="11" height="11" rx="2.5" stroke="currentColor" stroke-width="1.8" />
+        <path d="M5 15V6.5A2.5 2.5 0 0 1 7.5 4H15" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      </svg>
+    </button>
+    <span id="copy-status" class="sr-only" aria-live="polite" data-copy-status></span>
+    <ul class="contact__links" role="list">
+      <li><a href={site.phoneHref}>{site.phone}</a></li>
+      {
+        site.socials.map((social) => (
+          <li>
+            <a href={social.href} target="_blank" rel="noopener me">
+              {social.label}
+            </a>
+          </li>
+        ))
+      }
+      <li><a href={`mailto:${site.email}`}>E-mail</a></li>
+    </ul>
+  </div>
+</section>
+
+<style>
+  .contact {
+    padding-bottom: clamp(72px, 9vw, 120px);
+  }
+
+  .contact__cta {
+    margin-top: clamp(32px, 4vw, 44px);
+  }
+
+  .contact__card {
+    display: grid;
+    justify-items: center;
+    gap: 28px;
+    margin-top: clamp(96px, 12vw, 160px);
+    color: var(--ink);
+  }
+
+  .contact__email {
+    gap: 10px;
+    font-size: 1rem;
+    text-transform: none;
+  }
+
+  .contact__email.is-copied {
+    background: var(--ink);
+    color: #fff;
+  }
+
+  .contact__links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px clamp(28px, 6vw, 72px);
+    margin-top: 20px;
+    font-size: 0.9375rem;
+  }
+
+  .contact__links a {
+    color: var(--ink-80);
+    transition: color 0.3s var(--ease-out);
+  }
+
+  .contact__links a:hover {
+    color: var(--indigo-600);
+  }
+</style>
+
+<script>
+  const button = document.querySelector<HTMLButtonElement>('[data-copy]');
+  const label = button?.querySelector<HTMLElement>('[data-copy-label]');
+  const status = document.querySelector<HTMLElement>('[data-copy-status]');
+
+  if (button && label) {
+    const original = label.textContent ?? '';
+    let timer: number | undefined;
+
+    button.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(button.dataset.copy ?? '');
+        label.textContent = 'Adresse copiée';
+        button.classList.add('is-copied');
+        if (status) status.textContent = 'Adresse e-mail copiée dans le presse-papiers';
+        window.clearTimeout(timer);
+        timer = window.setTimeout(() => {
+          label.textContent = original;
+          button.classList.remove('is-copied');
+        }, 2000);
+      } catch {
+        window.location.href = `mailto:${button.dataset.copy}`;
+      }
+    });
+  }
+</script>
