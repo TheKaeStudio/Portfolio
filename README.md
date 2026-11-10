@@ -1,99 +1,99 @@
 # The Kae Studio
 
-Portfolio et site vitrine de **The Kae Studio**, le studio de Koçak Ali Erdem : design UI/UX, développement web & mobile, montage vidéo et graphisme.
+My portfolio and showcase website, highlighting UI/UX design, web & mobile development, video editing and graphic design.
 
-Site statique construit avec [Astro](https://astro.build), sans framework JavaScript côté client : chaque page est générée en HTML, les images sont optimisées au build (AVIF/WebP, tailles responsives) et seuls quelques petits scripts sont chargés (filtres, horloge, animations au scroll).
+Static site built with [Astro](https://astro.build).
 
-## Démarrer
+## Getting started
 
 ```bash
 npm install
 npm run dev
 ```
 
-Le site tourne sur [http://localhost:4321](http://localhost:4321).
+The site runs on [http://localhost:4321](http://localhost:4321).
 
-| Commande          | Action                                              |
+| Command           | Action                                              |
 | :---------------- | :-------------------------------------------------- |
-| `npm run dev`     | Serveur de développement                            |
-| `npm run build`   | Vérification des types puis build dans `./dist/`    |
-| `npm run preview` | Prévisualise le build de production                 |
+| `npm run dev`     | Start the development server                        |
+| `npm run build`   | Type-check, then build to `./dist/`                 |
+| `npm run preview` | Preview the production build                        |
 
 ## Structure
 
 ```text
 src/
-├── assets/            Ciel du hero, illustrations des sections, image Open Graph
-├── components/        Sections de la page d’accueil et composants partagés
-├── content/projects/  Une réalisation = un dossier (index.md + images)
-├── data/              Infos du studio, services, clients, parcours
-├── layouts/           Layout de base et balises SEO
-├── pages/             Accueil, pages réalisations, 404, robots.txt
-├── scripts/           Filtres, révélation du texte au scroll, parallax
-└── styles/            Styles globaux et variables
+├── assets/            Hero sky, section illustrations, Open Graph image
+├── components/        Home page sections and shared components
+├── content/projects/  One project = one folder (index.md + images)
+├── data/              Studio info, services, clients, background
+├── layouts/           Base layout and SEO tags
+├── pages/             Home, project pages, 404, robots.txt
+├── scripts/           Filters, scroll text reveal, parallax
+└── styles/            Global styles and variables
 ```
 
-## Ajouter une réalisation
+## Adding a project
 
-1. Créer un dossier dans `src/content/projects/`, par exemple `mon-projet/`.
-2. Y placer une image `cover.jpg` (format 4:3, idéalement 2000 × 1500) et les images de la galerie.
-3. Créer `index.md` :
+1. Create a folder in `src/content/projects/`, for example `my-project/`.
+2. Add a `cover.jpg` image (4:3 ratio, ideally 2000 × 1500) and the gallery images.
+3. Create `index.md`:
 
 ```md
 ---
-title: Mon projet
-client: Nom du client
-summary: Une phrase qui résume le projet (170 caractères max).
+title: My project
+client: Client name
+summary: One sentence that sums up the project (170 characters max).
 categories: [ui-ux, developpement]
-deliverables: [Site web, UI/UX]
+deliverables: [Website, UI/UX]
 year: '2026'
 order: 13
 cover: ./cover.jpg
-coverAlt: Description de l’image de couverture
+coverAlt: Description of the cover image
 links:
-  - label: monprojet.be
-    href: https://monprojet.be
+  - label: myproject.be
+    href: https://myproject.be
 gallery:
-  - src: ./capture.jpg
-    alt: Description de la capture
+  - src: ./screenshot.jpg
+    alt: Description of the screenshot
     frame: browser
-    url: monprojet.be
+    url: myproject.be
 ---
 
-## Le contexte
+## Context
 
 …
 ```
 
-Catégories disponibles pour les filtres : `ui-ux`, `developpement`, `montage-video`, `graphisme`.
+Available categories for the filters: `ui-ux`, `developpement`, `montage-video`, `graphisme`.
 
-Pour la galerie, `frame` accepte `browser`, `phone` ou `none`, et `span` accepte `full`, `half` ou `third`.
+In the gallery, `frame` accepts `browser`, `phone` or `none`, and `span` accepts `full`, `half` or `third`.
 
-Pour ajouter un aperçu vidéo qui se lance au survol de la carte, déposer un MP4 court et léger dans `public/previews/` puis ajouter `preview: /previews/mon-projet.mp4` dans l’en-tête du fichier.
+To add a video preview that plays when hovering the project card, drop a short, lightweight MP4 into `public/previews/` and add `preview: /previews/my-project.mp4` to the file's frontmatter.
 
 ## SEO
 
-- Balises `title`, `description`, Open Graph et Twitter générées pour chaque page
-- URL canoniques, `sitemap-index.xml` et `robots.txt` générés automatiquement
-- Données structurées JSON-LD : `WebSite`, `ProfessionalService`, `Person`, `CreativeWork` et `BreadcrumbList`
-- Images Open Graph 1200 × 630 générées à partir des couvertures
+- `title`, `description`, Open Graph and Twitter tags generated for every page
+- Canonical URLs, `sitemap-index.xml` and `robots.txt` generated automatically
+- JSON-LD structured data: `WebSite`, `ProfessionalService`, `Person`, `CreativeWork` and `BreadcrumbList`
+- 1200 × 630 Open Graph images generated from the project covers
 
-## Nom de domaine
+## Domain name
 
-Le domaine est défini à un seul endroit, dans `astro.config.mjs` :
+The domain is set in a single place, in `astro.config.mjs`:
 
 ```js
 site: 'https://kae.studio',
 ```
 
-## Déploiement
+## Deployment
 
-Le projet est prêt pour [Vercel](https://vercel.com) : importer le dépôt GitHub, Vercel détecte Astro automatiquement. Le fichier `vercel.json` active les URL propres et le cache longue durée des assets.
+The project is ready for [Vercel](https://vercel.com): import the GitHub repository and Vercel detects Astro automatically. The `vercel.json` file enables clean URLs and long-term caching for assets.
 
-## Polices
+## Fonts
 
-- [Fraunces](https://fonts.google.com/specimen/Fraunces) pour les titres
-- [Geist](https://vercel.com/font) pour le texte
-- [VT323](https://fonts.google.com/specimen/VT323) pour les numéros de section
+- [Fraunces](https://fonts.google.com/specimen/Fraunces) for headings
+- [Geist](https://vercel.com/font) for body text
+- [VT323](https://fonts.google.com/specimen/VT323) for section numbers
 
-Toutes sont sous licence SIL Open Font License et auto-hébergées via Fontsource.
+All are licensed under the SIL Open Font License and self-hosted through Fontsource.
