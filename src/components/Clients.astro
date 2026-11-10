@@ -1,0 +1,109 @@
+---
+import SectionHead from '@/components/SectionHead.astro';
+import AppIcon from '@/components/AppIcon.astro';
+import { clients } from '@/data/clients';
+---
+
+<section class="section clients" aria-labelledby="clients-title">
+  <slot name="visual" />
+  <div class="column centered">
+    <SectionHead index="02" label="Ils m’ont fait confiance" id="clients-title" />
+    <p class="statement" data-reveal>
+      Des indépendants aux PME, j’accompagne des marques ambitieuses qui veulent se démarquer.
+    </p>
+  </div>
+
+  <ul class="clients__grid container" role="list">
+    {
+      clients.map((name) => (
+        <li class="clients__item">
+          <span>{name}</span>
+        </li>
+      ))
+    }
+    <li class="clients__item clients__item--more"><span>et d’autres…</span></li>
+  </ul>
+
+  <div class="column centered clients__outro">
+    <p class="prose" data-reveal>
+      De Verviers à l’international, j’ai collaboré avec des artisans, des PME et des sociétés actives dans plusieurs
+      pays.
+    </p>
+    <p class="prose" data-reveal>
+      L’endroit où vous êtes compte moins que ce que vous créez, <span class="soft">et la façon dont vous le créez.</span>
+    </p>
+    <div class="clients__icon">
+      <AppIcon />
+    </div>
+    <p class="prose" data-reveal>
+      Mon objectif : créer un travail qui compte, avec celles et ceux qui accordent autant d’importance que moi au
+      détail, à l’intention et à l’exécution.
+    </p>
+    <p class="prose">
+      <a class="link" href="#contact">Si c’est votre cas, parlons-en.</a>
+    </p>
+  </div>
+</section>
+
+<style>
+  .clients__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    max-width: 60rem;
+    margin-block: clamp(48px, 7vw, 88px);
+    border-top: 1px solid var(--line);
+  }
+
+  .clients__item {
+    display: grid;
+    place-items: center;
+    min-height: clamp(84px, 9vw, 112px);
+    padding: 12px;
+    border-bottom: 1px solid var(--line);
+    font-size: clamp(1.0625rem, 1.7vw, 1.4375rem);
+    font-weight: 550;
+    letter-spacing: -0.035em;
+    color: #5f5f69;
+    text-align: center;
+    transition: color 0.4s var(--ease-out);
+  }
+
+  .clients__item:not(:nth-child(4n)) {
+    border-right: 1px solid var(--line);
+  }
+
+  .clients__item:hover {
+    color: var(--ink);
+  }
+
+  .clients__item--more {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-style: italic;
+    color: var(--muted-2);
+  }
+
+  .clients__outro {
+    display: grid;
+    gap: 22px;
+    justify-items: center;
+  }
+
+  .clients__icon {
+    margin-block: clamp(36px, 6vw, 64px) clamp(48px, 7vw, 72px);
+  }
+
+  @media (max-width: 720px) {
+    .clients__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .clients__item:not(:nth-child(4n)) {
+      border-right: 0;
+    }
+
+    .clients__item:nth-child(odd) {
+      border-right: 1px solid var(--line);
+    }
+  }
+</style>
