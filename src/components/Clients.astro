@@ -1,6 +1,5 @@
 ---
 import SectionHead from '@/components/SectionHead.astro';
-import AppIcon from '@/components/AppIcon.astro';
 import { clients } from '@/data/clients';
 ---
 
@@ -15,9 +14,14 @@ import { clients } from '@/data/clients';
 
   <ul class="clients__grid container" role="list">
     {
-      clients.map((name) => (
+      clients.map((client) => (
         <li class="clients__item">
-          <span>{name}</span>
+          <a class="clients__link" href={`/realisations/${client.project}`}>
+            {client.name}
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M7 17 17 7M9 7h8v8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </a>
         </li>
       ))
     }
@@ -32,9 +36,6 @@ import { clients } from '@/data/clients';
     <p class="prose" data-reveal>
       L’endroit où vous êtes compte moins que ce que vous créez, <span class="soft">et la façon dont vous le créez.</span>
     </p>
-    <div class="clients__icon">
-      <AppIcon />
-    </div>
     <p class="prose" data-reveal>
       Mon objectif : créer un travail qui compte, avec celles et ceux qui accordent autant d’importance que moi au
       détail, à l’intention et à l’exécution.
@@ -56,9 +57,7 @@ import { clients } from '@/data/clients';
 
   .clients__item {
     display: grid;
-    place-items: center;
     min-height: clamp(84px, 9vw, 112px);
-    padding: 12px;
     border-bottom: 1px solid var(--line);
     font-size: clamp(1.0625rem, 1.7vw, 1.4375rem);
     font-weight: 550;
@@ -72,8 +71,40 @@ import { clients } from '@/data/clients';
     border-right: 1px solid var(--line);
   }
 
-  .clients__item:hover {
+  .clients__link,
+  .clients__item--more span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 12px;
+  }
+
+  .clients__link {
+    position: relative;
+    transition:
+      color 0.4s var(--ease-out),
+      background-color 0.4s var(--ease-out);
+  }
+
+  .clients__link svg {
+    opacity: 0;
+    transform: translate(-4px, 4px);
+    transition:
+      opacity 0.4s var(--ease-out),
+      transform 0.4s var(--ease-out);
+  }
+
+  .clients__link:hover,
+  .clients__link:focus-visible {
     color: var(--ink);
+    background: #fafaff;
+  }
+
+  .clients__link:hover svg,
+  .clients__link:focus-visible svg {
+    opacity: 1;
+    transform: none;
   }
 
   .clients__item--more {
@@ -89,8 +120,8 @@ import { clients } from '@/data/clients';
     justify-items: center;
   }
 
-  .clients__icon {
-    margin-block: clamp(36px, 6vw, 64px) clamp(48px, 7vw, 72px);
+  .clients__outro > :nth-child(2) {
+    margin-bottom: clamp(32px, 5vw, 56px);
   }
 
   @media (max-width: 720px) {
