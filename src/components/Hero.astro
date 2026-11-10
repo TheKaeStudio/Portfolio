@@ -3,6 +3,11 @@ import { Picture } from 'astro:assets';
 import sky from '@/assets/hero/sky.jpg';
 import LogoMark from '@/components/LogoMark.astro';
 import { site } from '@/data/site';
+import '@fontsource/gilda-display/latin-400.css';
+import '@fontsource/gilda-display/latin-ext-400.css';
+
+const star =
+  'M12 0c.6 6.6 5.4 11.4 12 12-6.6.6-11.4 5.4-12 12-.6-6.6-5.4-11.4-12-12C6.6 11.4 11.4 6.6 12 0Z';
 
 const { latitude, longitude, city, countryCode } = site.location;
 const coords = `${latitude.toFixed(4)}° N, ${longitude.toFixed(4)}° E`;
@@ -28,11 +33,22 @@ const coords = `${latitude.toFixed(4)}° N, ${longitude.toFixed(4)}° E`;
   </div>
 
   <div class="hero__content" data-parallax="0.08">
-    <h1 id="hero-title" class="hero__title serif">
-      <span class="hero__the">The</span>
-      <span class="hero__name">Kae Studio</span>
+    <h1 id="hero-title" class="hero__title">
+      <span class="sr-only">The Kae Studio</span>
+      <span class="hero__the" aria-hidden="true">The</span>
+      <span class="hero__name" aria-hidden="true"
+        >Kae Stud<span class="hero__i"
+          >ı<svg class="hero__tittle" viewBox="0 0 24 24"><path d={star} fill="#fff" /></svg></span
+        >o</span
+      >
+      <span class="hero__shooting" aria-hidden="true">
+        <span class="hero__trail"></span>
+        <svg class="hero__comet" viewBox="0 0 24 24"><path d={star} fill="#fff" /></svg>
+      </span>
+      <svg class="hero__twinkle hero__twinkle--a" viewBox="0 0 24 24" aria-hidden="true"><path d={star} fill="#fff" /></svg>
+      <svg class="hero__twinkle hero__twinkle--b" viewBox="0 0 24 24" aria-hidden="true"><path d={star} fill="#fff" /></svg>
     </h1>
-    <p class="hero__subtitle serif">Artisan du numérique</p>
+    <p class="hero__subtitle">Artisan du numérique</p>
   </div>
 
   <div class="hero__footer" aria-hidden="true">
@@ -116,10 +132,12 @@ const coords = `${latitude.toFixed(4)}° N, ${longitude.toFixed(4)}° E`;
   }
 
   .hero__title {
+    position: relative;
     display: grid;
+    font-family: 'Gilda Display', var(--font-serif);
     font-weight: 400;
-    line-height: 0.86;
-    letter-spacing: -0.025em;
+    line-height: 0.9;
+    letter-spacing: -0.015em;
   }
 
   .hero__the,
@@ -134,19 +152,92 @@ const coords = `${latitude.toFixed(4)}° N, ${longitude.toFixed(4)}° E`;
 
   .hero__the {
     justify-self: start;
-    margin-left: 0.6em;
+    margin-left: 0.55em;
     font-size: clamp(40px, 6vw, 84px);
   }
 
   .hero__name {
-    font-size: clamp(76px, 15.5vw, 236px);
+    font-size: clamp(76px, 15vw, 228px);
     white-space: nowrap;
+  }
+
+  .hero__i {
+    position: relative;
+    display: inline-block;
+  }
+
+  .hero__tittle {
+    position: absolute;
+    left: 50%;
+    top: 0.02em;
+    width: 0.2em;
+    height: 0.2em;
+    transform: translateX(-50%);
+    filter: drop-shadow(0 0 0.06em rgb(255 255 255 / 0.95));
+    animation: twinkle 3.6s var(--ease-in-out) infinite;
+  }
+
+  .hero__shooting {
+    position: absolute;
+    right: -0.04em;
+    top: -0.32em;
+    width: 2.3em;
+    height: 0.6em;
+    font-size: clamp(76px, 15vw, 228px);
+    transform: rotate(-12deg);
+    pointer-events: none;
+  }
+
+  .hero__trail {
+    position: absolute;
+    right: 0.08em;
+    top: 50%;
+    width: 100%;
+    height: 2px;
+    border-radius: 2px;
+    background: linear-gradient(90deg, rgb(255 255 255 / 0), rgb(255 255 255 / 0.9));
+    transform-origin: right center;
+    animation: shoot 7s var(--ease-out) infinite;
+  }
+
+  .hero__comet {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    width: 0.16em;
+    height: 0.16em;
+    transform: translate(40%, -50%);
+    filter: drop-shadow(0 0 0.06em rgb(255 255 255 / 0.95));
+    animation: twinkle 3.6s var(--ease-in-out) 1.2s infinite;
+  }
+
+  .hero__twinkle {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    filter: drop-shadow(0 0 6px rgb(255 255 255 / 0.9));
+    animation: twinkle 4.2s var(--ease-in-out) infinite;
+  }
+
+  .hero__twinkle--a {
+    left: -4%;
+    bottom: 6%;
+    animation-delay: 0.8s;
+  }
+
+  .hero__twinkle--b {
+    right: 8%;
+    bottom: -12%;
+    width: 9px;
+    height: 9px;
+    animation-delay: 2s;
   }
 
   .hero__subtitle {
     margin-top: clamp(10px, 1.6vw, 22px);
+    font-family: 'Gilda Display', var(--font-serif);
     font-size: clamp(26px, 3.6vw, 52px);
-    letter-spacing: -0.01em;
+    letter-spacing: -0.005em;
     filter: drop-shadow(0 2px 16px rgb(6 42 115 / 0.55));
   }
 
@@ -205,6 +296,34 @@ const coords = `${latitude.toFixed(4)}° N, ${longitude.toFixed(4)}° E`;
     to {
       opacity: 1;
       transform: scale(1.05);
+    }
+  }
+
+  @keyframes twinkle {
+    0%,
+    100% {
+      opacity: 1;
+      scale: 1;
+    }
+    50% {
+      opacity: 0.55;
+      scale: 0.75;
+    }
+  }
+
+  @keyframes shoot {
+    0% {
+      opacity: 0;
+      transform: scaleX(0);
+    }
+    12% {
+      opacity: 1;
+      transform: scaleX(1);
+    }
+    30%,
+    100% {
+      opacity: 0.85;
+      transform: scaleX(1);
     }
   }
 
