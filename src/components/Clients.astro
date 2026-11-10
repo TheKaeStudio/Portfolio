@@ -1,5 +1,6 @@
 ---
 import SectionHead from '@/components/SectionHead.astro';
+import AppIcon from '@/components/AppIcon.astro';
 import { clients } from '@/data/clients';
 ---
 
@@ -36,6 +37,9 @@ import { clients } from '@/data/clients';
     <p class="prose" data-reveal>
       L’endroit où vous êtes compte moins que ce que vous créez, <span class="soft">et la façon dont vous le créez.</span>
     </p>
+    <div class="clients__icon">
+      <AppIcon size={92} />
+    </div>
     <p class="prose" data-reveal>
       Mon objectif : créer un travail qui compte, avec celles et ceux qui accordent autant d’importance que moi au
       détail, à l’intention et à l’exécution.
@@ -120,8 +124,8 @@ import { clients } from '@/data/clients';
     justify-items: center;
   }
 
-  .clients__outro > :nth-child(2) {
-    margin-bottom: clamp(32px, 5vw, 56px);
+  .clients__icon {
+    margin-block: clamp(28px, 5vw, 52px) clamp(12px, 2vw, 20px);
   }
 
   @media (max-width: 720px) {
