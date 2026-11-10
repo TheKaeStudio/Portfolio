@@ -1,30 +1,40 @@
 ---
 import type { GetStaticPaths } from 'astro';
-import { Picture } from 'astro:assets';
+import { Image, Picture } from 'astro:assets';
 import { render } from 'astro:content';
 import Base from '@/layouts/Base.astro';
 import Header from '@/components/Header.astro';
 import Footer from '@/components/Footer.astro';
 import GalleryItem from '@/components/GalleryItem.astro';
+import ProjectCard from '@/components/ProjectCard.astro';
+import StackIcon from '@/components/StackIcon.astro';
+import Contact from '@/components/Contact.astro';
 import { getProjects, type Project } from '@/data/projects';
 import { categoryLabel } from '@/data/services';
 import { site } from '@/data/site';
+import { toolName } from '@/data/tools';
 
 export const getStaticPaths = (async () => {
   const projects = await getProjects();
   return projects.map((project, i) => ({
     params: { slug: project.id },
-    props: { project, next: projects[(i + 1) % projects.length] },
+    props: {
+      project,
+      others: [1, 2, 3].map((step) => projects[(i + step) % projects.length]),
+    },
   }));
 }) satisfies GetStaticPaths;
 
 interface Props {
   project: Project;
-  next: Project;
+  others: Project[];
 }
 
-const { project, next } = Astro.props;
-const { title, client, summary, categories, deliverables, year, cover, coverAlt, links, gallery } = project.data;
+const { project, others } = Astro.props;
+const { title, client, summary, categories, deliverables, year, industry, stack, icon, cover, coverAlt, links, gallery } =
+  project.data;
+const [primaryLink, ...secondaryLinks] = links;
+const linkLabel = (label: string) => (label.includes('.') ? 'Voir le site' : `Voir sur ${label}`);
 const { Content } = await render(project);
 const pageUrl = new URL(`/realisations/${project.id}`, Astro.site).href;
 
@@ -39,7 +49,8 @@ const jsonLd = [
     inLanguage: 'fr-BE',
     dateCreated: year.slice(0, 4),
     genre: categories.map(categoryLabel),
-    keywords: deliverables.join(', '),
+    keywords: [...deliverables, ...stack.map(toolName)].join(', '),
+    about: industry.join(', '),
     creator: { '@type': 'Person', name: site.founder.name, url: new URL('/', Astro.site).href },
     publisher: { '@type': 'Organization', name: site.name, url: new URL('/', Astro.site).href },
     sourceOrganization: { '@type': 'Organization', name: client },
@@ -60,52 +71,90 @@ const jsonLd = [
   <Header slot="header" />
 
   <article class="project">
-    <header class="project__head column-wide">
-      <nav class="crumbs" aria-label="Fil d’Ariane">
-        <ol role="list">
-          <li><a href="/">Accueil</a></li>
-          <li><a href="/#realisations">Réalisations</a></li>
-          <li aria-current="page">{title}</li>
-        </ol>
-      </nav>
+    <header class="project__head narrow">
+      <a class="project__back" href="/#realisations" aria-label="Retour aux réalisations">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M19 12H5m6-6-6 6 6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </a>
+
+      <span class:list={['project__icon', { 'project__icon--padded': icon?.padded }]} style={icon ? `background: ${icon.background}` : undefined}>
+        {
+          icon ? (
+            <Image src={icon.src} alt="" width={128} height={Math.round((128 * icon.src.height) / icon.src.width)} loading="eager" />
+          ) : (
+            <Image src={cover} alt="" widths={[144, 288]} sizes="72px" loading="eager" />
+          )
+        }
+      </span>
+
       <p class="project__tags">{categories.map(categoryLabel).join(' · ')}</p>
       <h1 class="project__title serif">{title}</h1>
       <p class="project__summary">{summary}</p>
 
-      <dl class="project__facts">
+      {
+        primaryLink && (
+          <div class="project__actions">
+            <a class="pill pill--primary pill--lg" href={primaryLink.href} target="_blank" rel="noopener">
+              {linkLabel(primaryLink.label)}
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M7 17 17 7M9 7h8v8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </a>
+            {secondaryLinks.map((link) => (
+              <a class="pill pill--lg" href={link.href} target="_blank" rel="noopener">
+                {link.label}
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M7 17 17 7M9 7h8v8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </a>
+            ))}
+          </div>
+        )
+      }
+
+      <dl class="project__meta">
         <div>
-          <dt>Client</dt>
-          <dd>{client}</dd>
+          <dt>Prestations</dt>
+          <dd>
+            <ul role="list">
+              {deliverables.map((item) => <li>{item}</li>)}
+            </ul>
+          </dd>
+        </div>
+        {
+          stack.length > 0 && (
+            <div>
+              <dt>Stack & outils</dt>
+              <dd>
+                <ul role="list" class="project__stack">
+                  {stack.map((tool) => (
+                    <li>
+                      <StackIcon tool={tool} size={22} />
+                      {toolName(tool)}
+                    </li>
+                  ))}
+                </ul>
+              </dd>
+            </div>
+          )
+        }
+        <div>
+          <dt>Secteur</dt>
+          <dd>
+            <ul role="list">
+              {industry.map((item) => <li>{item}</li>)}
+            </ul>
+          </dd>
         </div>
         <div>
           <dt>Année</dt>
           <dd>{year}</dd>
         </div>
-        <div>
-          <dt>Prestations</dt>
-          <dd>{deliverables.join(', ')}</dd>
-        </div>
-        {
-          links.length > 0 && (
-            <div>
-              <dt>Liens</dt>
-              <dd class="project__links">
-                {links.map((link) => (
-                  <a href={link.href} target="_blank" rel="noopener">
-                    {link.label}
-                    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                      <path d="M7 17 17 7M9 7h8v8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                  </a>
-                ))}
-              </dd>
-            </div>
-          )
-        }
       </dl>
     </header>
 
-    <div class="project__cover container">
+    <figure class="project__cover container">
       <Picture
         src={cover}
         alt={coverAlt}
@@ -115,9 +164,9 @@ const jsonLd = [
         loading="eager"
         fetchpriority="high"
       />
-    </div>
+    </figure>
 
-    <div class="project__body column">
+    <div class="project__body narrow">
       <Content />
     </div>
 
@@ -132,151 +181,184 @@ const jsonLd = [
     }
   </article>
 
-  <nav class="next container" aria-label="Projet suivant">
-    <a class="next__link" href={`/realisations/${next.id}`}>
-      <span class="next__label">Projet suivant</span>
-      <span class="next__title serif">{next.data.title}</span>
-      <span class="next__media">
-        <Picture
-          src={next.data.cover}
-          alt=""
-          formats={['avif', 'webp']}
-          widths={[480, 720, 960]}
-          sizes="(max-width: 720px) 100vw, 480px"
-          loading="lazy"
-        />
-      </span>
-    </a>
-    <div class="next__actions">
-      <a class="pill pill--lg" href="/#realisations">Toutes les réalisations</a>
-      <a class="pill pill--primary pill--lg" href="/#contact">Démarrer un projet</a>
+  <section class="more container" aria-labelledby="more-title">
+    <div class="more__head">
+      <h2 class="more__title" id="more-title">Autres réalisations</h2>
+      <a class="pill" href="/#realisations">Tout voir</a>
     </div>
-  </nav>
+    <div class="more__grid">
+      {others.map((other) => <ProjectCard project={other} />)}
+    </div>
+  </section>
+
+  <Contact />
 
   <Footer slot="footer" />
 </Base>
 
+<script>
+  import '@/scripts/reveal';
+</script>
+
 <style>
-  .column-wide {
-    width: min(100% - var(--gutter) * 2, 52rem);
+  .narrow {
+    width: min(100% - var(--gutter) * 2, 40rem);
     margin-inline: auto;
   }
 
   .project__head {
-    padding-top: calc(var(--header-h) + clamp(48px, 8vw, 96px));
-    text-align: center;
+    padding-top: calc(var(--header-h) + clamp(40px, 6vw, 72px));
   }
 
-  .crumbs ol {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 8px;
-    margin-bottom: clamp(32px, 5vw, 56px);
-    font-size: 0.8125rem;
-    color: var(--muted);
-  }
-
-  .crumbs li + li::before {
-    content: '/';
-    margin-right: 8px;
-    color: var(--muted-2);
-  }
-
-  .crumbs a:hover {
-    color: var(--ink);
-  }
-
-  .crumbs [aria-current] {
+  .project__back {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    margin-bottom: clamp(32px, 4vw, 44px);
+    border-radius: 50%;
+    background: #fff;
     color: var(--ink-80);
+    box-shadow:
+      0 0 0 1px var(--line),
+      0 10px 24px -14px rgb(11 11 16 / 0.35);
+    transition:
+      transform 0.4s var(--ease-out),
+      box-shadow 0.4s var(--ease-out);
+  }
+
+  .project__back:hover {
+    transform: translateX(-3px);
+    box-shadow:
+      0 0 0 1px rgb(11 11 16 / 0.14),
+      0 14px 28px -14px rgb(11 11 16 / 0.4);
+  }
+
+  .project__icon {
+    display: grid;
+    place-items: center;
+    width: 72px;
+    height: 72px;
+    overflow: hidden;
+    border-radius: 20px;
+    background: var(--paper-2);
+    box-shadow:
+      0 0 0 1px var(--line),
+      0 18px 34px -18px rgb(11 11 16 / 0.45);
+  }
+
+  .project__icon :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .project__icon--padded {
+    padding: 14px;
+  }
+
+  .project__icon--padded :global(img) {
+    object-fit: contain;
   }
 
   .project__tags {
+    margin-top: 32px;
     font-family: var(--font-mono);
     font-size: 1.0625rem;
-    color: var(--blue-600);
+    color: var(--muted);
   }
 
   .project__title {
-    margin-top: 12px;
-    font-size: clamp(3rem, 8vw, 6.5rem);
+    margin-top: 6px;
+    font-size: clamp(2.5rem, 6vw, 4rem);
     font-weight: 400;
-    line-height: 0.95;
+    line-height: 1;
     letter-spacing: -0.03em;
     color: var(--ink);
     text-wrap: balance;
   }
 
   .project__summary {
-    max-width: 36rem;
-    margin: clamp(20px, 3vw, 28px) auto 0;
-    font-size: clamp(1.125rem, 1.6vw, 1.3125rem);
-    line-height: 1.4;
+    margin-top: 20px;
+    font-size: clamp(1.125rem, 1.5vw, 1.25rem);
+    line-height: 1.5;
     letter-spacing: -0.015em;
     color: var(--ink-60);
-    text-wrap: balance;
+    text-wrap: pretty;
   }
 
-  .project__facts {
+  .project__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 32px;
+  }
+
+  .project__actions .pill {
+    gap: 8px;
+  }
+
+  .project__meta {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 20px;
-    margin: clamp(40px, 6vw, 64px) 0 0;
-    padding-top: 24px;
-    border-top: 1px solid var(--line);
-    text-align: left;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 40px 32px;
+    margin: clamp(48px, 6vw, 72px) 0 0;
   }
 
-  .project__facts dt {
-    margin-bottom: 4px;
-    font-size: 0.8125rem;
+  .project__meta dt {
+    margin-bottom: 12px;
+    font-size: 0.875rem;
     color: var(--muted);
   }
 
-  .project__facts dd {
-    font-size: 0.9375rem;
+  .project__meta dd {
+    margin: 0;
+    font-size: 1rem;
     color: var(--ink);
   }
 
-  .project__links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px 14px;
+  .project__meta ul {
+    display: grid;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
 
-  .project__links a {
-    display: inline-flex;
+  .project__stack li {
+    display: flex;
     align-items: center;
-    gap: 4px;
-    color: var(--blue-700);
+    gap: 10px;
   }
 
   .project__cover {
-    margin-top: clamp(40px, 6vw, 72px);
+    margin: clamp(56px, 8vw, 96px) auto 0;
+    padding: clamp(16px, 4vw, 56px);
+    border-radius: var(--radius-lg);
+    background: var(--paper-2);
+    box-shadow: 0 0 0 1px var(--line) inset;
   }
 
   .project__cover :global(img) {
     width: 100%;
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius);
     box-shadow: 0 0 0 1px var(--line), var(--shadow-card);
   }
 
   .project__body {
-    padding-block: clamp(64px, 9vw, 120px);
-    font-size: clamp(1.0625rem, 1.2vw, 1.1875rem);
-    line-height: 1.6;
+    padding-block: clamp(64px, 9vw, 112px);
+    font-size: clamp(1.0625rem, 1.2vw, 1.125rem);
+    line-height: 1.65;
     letter-spacing: -0.01em;
     color: var(--ink-80);
   }
 
   .project__body :global(h2) {
-    margin: 2.2em 0 0.6em;
-    font-family: var(--font-serif);
-    font-variation-settings: 'opsz' 144;
-    font-size: clamp(1.625rem, 2.4vw, 2.125rem);
-    font-weight: 400;
-    letter-spacing: -0.02em;
-    color: var(--ink);
+    margin: 2.4em 0 0.7em;
+    font-size: 0.875rem;
+    font-weight: 500;
+    letter-spacing: 0;
+    color: var(--muted);
   }
 
   .project__body :global(h2:first-child) {
@@ -305,73 +387,59 @@ const jsonLd = [
   .project__body :global(li)::before {
     content: '';
     position: absolute;
-    left: 2px;
-    top: 0.72em;
-    width: 7px;
-    height: 7px;
+    left: 3px;
+    top: 0.7em;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
-    background: var(--blue-500);
-    box-shadow: 0 0 0 3px var(--sky-50);
+    background: var(--ink);
   }
 
   .project__gallery {
     display: grid;
     grid-template-columns: repeat(6, minmax(0, 1fr));
-    gap: clamp(16px, 2.4vw, 32px);
+    gap: clamp(16px, 2vw, 24px);
   }
 
-  .next {
-    display: grid;
-    justify-items: center;
-    gap: 40px;
-    padding-block: clamp(96px, 12vw, 160px) clamp(56px, 8vw, 96px);
-    text-align: center;
+  .more {
+    padding-top: clamp(96px, 12vw, 160px);
   }
 
-  .next__link {
-    display: grid;
-    justify-items: center;
-    gap: 10px;
-  }
-
-  .next__label {
-    font-size: 0.9375rem;
-    color: var(--muted);
-  }
-
-  .next__title {
-    font-size: clamp(2.5rem, 6vw, 4.5rem);
-    line-height: 1;
-    letter-spacing: -0.03em;
-    color: var(--ink);
-    transition: color 0.4s var(--ease-out);
-  }
-
-  .next__media {
-    width: min(100%, 480px);
-    margin-top: 24px;
-    overflow: hidden;
-    border-radius: var(--radius);
-    box-shadow: 0 0 0 1px var(--line), var(--shadow-card);
-  }
-
-  .next__media :global(img) {
-    width: 100%;
-    transition: transform 1.2s var(--ease-out);
-  }
-
-  .next__link:hover .next__title {
-    color: var(--blue-600);
-  }
-
-  .next__link:hover .next__media :global(img) {
-    transform: scale(1.04);
-  }
-
-  .next__actions {
+  .more__head {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+
+  .more__title {
+    font-size: 1.375rem;
+    font-weight: 500;
+    letter-spacing: -0.035em;
+    color: var(--ink);
+  }
+
+  .more__grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(16px, 2vw, 24px);
+  }
+
+  @media (max-width: 900px) {
+    .more__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .more__grid > :global(:nth-child(n + 3)) {
+      display: none;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .project__meta {
+      grid-template-columns: 1fr 1fr;
+      gap: 32px 20px;
+    }
   }
 </style>
