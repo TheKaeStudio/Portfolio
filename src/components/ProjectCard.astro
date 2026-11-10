@@ -1,0 +1,141 @@
+---
+import { Picture } from 'astro:assets';
+import type { Project } from '@/data/projects';
+import { categoryLabel } from '@/data/services';
+
+interface Props {
+  project: Project;
+  eager?: boolean;
+  headingLevel?: 'h3' | 'h2';
+}
+
+const { project, eager = false, headingLevel = 'h3' } = Astro.props;
+const { title, cover, coverAlt, categories, preview } = project.data;
+const Heading = headingLevel;
+---
+
+<a class="project-card" href={`/realisations/${project.id}`}>
+  <div class="project-card__media">
+    <Picture
+      src={cover}
+      alt={coverAlt}
+      formats={['avif', 'webp']}
+      widths={[480, 720, 960, 1280, 1600]}
+      sizes="(max-width: 720px) calc(100vw - 40px), (max-width: 1000px) 50vw, 50vw"
+      loading={eager ? 'eager' : 'lazy'}
+      class="project-card__img"
+    />
+    {
+      preview && (
+        <video class="project-card__video" src={preview} muted loop playsinline preload="none" aria-hidden="true" />
+      )
+    }
+    <span class="project-card__cta" aria-hidden="true">
+      Voir le projet
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none">
+        <path d="M7 17 17 7M9 7h8v8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </span>
+  </div>
+  <div class="project-card__meta">
+    <Heading class="project-card__title">{title}</Heading>
+    <p class="project-card__tags">{categories.map(categoryLabel).join(' · ')}</p>
+  </div>
+</a>
+
+<style>
+  .project-card {
+    display: grid;
+    gap: 14px;
+  }
+
+  .project-card__media {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border-radius: var(--radius);
+    background: var(--paper-2);
+    box-shadow: 0 0 0 1px var(--line);
+    isolation: isolate;
+  }
+
+  .project-card__media :global(img),
+  .project-card__video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 1.2s var(--ease-out);
+  }
+
+  .project-card__video {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition:
+      opacity 0.5s var(--ease-out),
+      transform 1.2s var(--ease-out);
+  }
+
+  .project-card__video.is-playing {
+    opacity: 1;
+  }
+
+  .project-card__cta {
+    position: absolute;
+    left: 16px;
+    bottom: 16px;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 34px;
+    padding: 0 14px;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.92);
+    backdrop-filter: blur(8px);
+    color: var(--ink);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    box-shadow: 0 8px 24px -8px rgb(11 11 16 / 0.35);
+    opacity: 0;
+    transform: translateY(8px);
+    transition:
+      opacity 0.4s var(--ease-out),
+      transform 0.4s var(--ease-out);
+  }
+
+  .project-card:hover .project-card__media :global(img),
+  .project-card:hover .project-card__video,
+  .project-card:focus-visible .project-card__media :global(img) {
+    transform: scale(1.035);
+  }
+
+  .project-card:hover .project-card__cta,
+  .project-card:focus-visible .project-card__cta {
+    opacity: 1;
+    transform: none;
+  }
+
+  .project-card__meta {
+    display: grid;
+    gap: 2px;
+    padding-inline: 2px;
+  }
+
+  .project-card__title {
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+  }
+
+  .project-card__tags {
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+
+  @media (hover: none) {
+    .project-card__cta {
+      display: none;
+    }
+  }
+</style>

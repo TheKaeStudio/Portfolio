@@ -310,3 +310,8 @@ button {
   background-size: 0 1px;
   background-position: 100% 100%;
 }
+
+::view-transition-group(*) {
+  animation-duration: 0.5s;
+  animation-timing-function: var(--ease-out);
+}

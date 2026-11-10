@@ -1,0 +1,116 @@
+---
+import SectionHead from '@/components/SectionHead.astro';
+import ProjectCard from '@/components/ProjectCard.astro';
+import { getProjects, layoutSizes } from '@/data/projects';
+import { categories } from '@/data/services';
+
+const projects = await getProjects();
+const sizes = layoutSizes(projects.length);
+const counts = Object.fromEntries(
+  categories.map((c) => [c.slug, projects.filter((p) => p.data.categories.includes(c.slug)).length]),
+);
+---
+
+<section class="section works" id="realisations" aria-labelledby="works-title">
+  <slot name="visual" />
+  <div class="column centered">
+    <SectionHead index="05" label="Réalisations" id="works-title" />
+    <p class="statement" data-reveal>
+      Une sélection de projets, <span class="soft">du premier pixel à la mise en ligne.</span>
+    </p>
+  </div>
+
+  <div class="works__filters" role="group" aria-label="Filtrer les réalisations par type" data-filters>
+    <button class="pill" type="button" aria-pressed="true" data-filter="all">
+      Tout <span class="works__count">{projects.length}</span>
+    </button>
+    {
+      categories.map((category) => (
+        <button class="pill" type="button" aria-pressed="false" data-filter={category.slug}>
+          {category.label} <span class="works__count">{counts[category.slug]}</span>
+        </button>
+      ))
+    }
+  </div>
+  <p class="sr-only" aria-live="polite" data-works-status></p>
+
+  <ul class="works__grid container" role="list" data-works>
+    {
+      projects.map((project, i) => (
+        <li
+          class="works__item"
+          data-categories={project.data.categories.join(' ')}
+          data-size={sizes[i]}
+          style={`view-transition-name: work-${project.id}`}
+        >
+          <ProjectCard project={project} />
+        </li>
+      ))
+    }
+  </ul>
+</section>
+
+<style>
+  .works__filters {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin: clamp(36px, 5vw, 56px) auto clamp(40px, 5vw, 64px);
+    padding: 0 var(--gutter);
+  }
+
+  .works__count {
+    font-family: var(--font-mono);
+    font-size: 0.9375rem;
+    line-height: 1;
+    opacity: 0.55;
+  }
+
+  .works__grid {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: clamp(36px, 4vw, 56px) clamp(16px, 2vw, 24px);
+  }
+
+  .works__item {
+    grid-column: span 2;
+  }
+
+  .works__item[data-size='large'] {
+    grid-column: span 3;
+  }
+
+  .works__item[data-size='full'] {
+    grid-column: 2 / span 4;
+  }
+
+  .works__item[hidden] {
+    display: none;
+  }
+
+  @media (max-width: 1000px) {
+    .works__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .works__item,
+    .works__item[data-size='large'] {
+      grid-column: span 1;
+    }
+
+    .works__item[data-size='full'] {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .works__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .works__item[data-size] {
+      grid-column: 1 / -1;
+    }
+  }
+</style>
