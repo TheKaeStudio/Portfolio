@@ -34,9 +34,7 @@ import { servicePills, services } from '@/data/services';
     {
       services.map((service, i) => (
         <article class="service">
-          <span class="service__index" aria-hidden="true">
-            {String(i + 1).padStart(2, '0')}
-          </span>
+          <span class="service__index" data-index={String(i + 1).padStart(2, '0')} aria-hidden="true" />
           <h3 class="service__title">{service.title}</h3>
           <p class="service__text">{service.description}</p>
           <a class="service__link" href="#realisations" data-filter-link={service.category}>
@@ -88,6 +86,10 @@ import { servicePills, services } from '@/data/services';
 
   .service:hover {
     background: #fafaff;
+  }
+
+  .service__index::before {
+    content: attr(data-index);
   }
 
   .service__index {

@@ -10,7 +10,7 @@ const { index, label, id, align = 'center' } = Astro.props;
 ---
 
 <div class:list={['section-head', `section-head--${align}`]}>
-  <span class="section-head__index" aria-hidden="true">{index}</span>
+  <span class="section-head__index" data-index={index} aria-hidden="true"></span>
   <h2 class="section-head__label" id={id}>{label}</h2>
 </div>
 
@@ -25,6 +25,10 @@ const { index, label, id, align = 'center' } = Astro.props;
   .section-head--center {
     justify-items: center;
     text-align: center;
+  }
+
+  .section-head__index::before {
+    content: attr(data-index);
   }
 
   .section-head__index {
