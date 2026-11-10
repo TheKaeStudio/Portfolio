@@ -1,0 +1,23 @@
+---
+interface Props {
+  size?: number;
+  class?: string;
+  title?: string;
+}
+
+const { size = 24, class: className, title } = Astro.props;
+---
+
+<svg
+  class={className}
+  width={size}
+  height={size}
+  viewBox="0 0 100 100"
+  fill="currentColor"
+  role={title ? 'img' : undefined}
+  aria-hidden={title ? undefined : 'true'}
+  aria-label={title}
+>
+  <path d="M28 13a7 7 0 0 1 7 7v60a7 7 0 0 1-14 0V20a7 7 0 0 1 7-7Z" />
+  <path d="M29 36q22 0 50-23-24 29-36 37 12 8 36 37-28-23-50-23Z" />
+</svg>
