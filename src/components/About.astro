@@ -1,5 +1,6 @@
 ---
 import SectionHead from '@/components/SectionHead.astro';
+import Skills from '@/components/Skills.astro';
 import { Picture } from 'astro:assets';
 import portrait from '@/assets/about/portrait.jpg';
 import { site } from '@/data/site';
@@ -100,6 +101,8 @@ const leaves = Array.from({ length: 6 }, (_, i) => {
       ))
     }
   </div>
+
+  <Skills />
 
   <div class="profile">
     <div class="profile__avatar">

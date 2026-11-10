@@ -1,0 +1,329 @@
+---
+import StackIcon from '@/components/StackIcon.astro';
+import SkillTree from '@/components/SkillTree.astro';
+import { skillTree, allSkills } from '@/data/skills';
+
+const toolCount = allSkills.filter((skill) => skill.tool).length;
+const sky = Array.from({ length: 46 }, (_, i) => {
+  const a = Math.sin(i * 91.7) * 43758.5453;
+  const b = Math.sin(i * 12.9) * 24634.6345;
+  const c = Math.sin(i * 47.3) * 13579.2468;
+  return { x: (a - Math.floor(a)) * 100, y: (b - Math.floor(b)) * 100, r: 0.6 + (c - Math.floor(c)) * 1.4 };
+});
+const constellation = [
+  [62, 36],
+  [70, 22],
+  [80, 30],
+  [88, 18],
+  [78, 48],
+  [90, 58],
+  [68, 62],
+];
+---
+
+<div class="skills container" id="competences">
+  <div class="skills__head">
+    <h3 class="skills__title">Compétences</h3>
+    <p class="skills__count">{allSkills.length} compétences, dont {toolCount} outils</p>
+  </div>
+
+  <div class="skills__grid">
+    {
+      skillTree.map((branch) => (
+        <article class:list={['skills__card', `skills__card--${branch.id}`]}>
+          <h4 class="skills__name">{branch.name}</h4>
+          <p class="skills__summary">{branch.summary}</p>
+          <div class="skills__groups">
+            {branch.groups.map((group) => (
+              <div class="skills__group">
+                <p class="skills__group-name">{group.name}</p>
+                <ul class="skills__chips" role="list">
+                  {group.skills.map((skill) => (
+                    <li>
+                      <button class="skills__chip" type="button" data-tree-open={skill.id}>
+                        {skill.tool ? <StackIcon tool={skill.tool} size={20} /> : <span class="skills__spark" aria-hidden="true" />}
+                        {skill.name}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </article>
+      ))
+    }
+
+    <button class="skills__explore" type="button" data-tree-open>
+      <svg class="skills__sky" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        {sky.map((star) => <circle cx={star.x} cy={star.y} r={star.r * 0.18} />)}
+      </svg>
+      <svg class="skills__constellation" viewBox="0 0 100 80" aria-hidden="true">
+        <polyline points={constellation.slice(0, 4).map((p) => p.join(',')).join(' ')} />
+        <polyline points={[constellation[2], constellation[4], constellation[5]].map((p) => p.join(',')).join(' ')} />
+        <polyline points={[constellation[4], constellation[6], constellation[0]].map((p) => p.join(',')).join(' ')} />
+        {constellation.map(([x, y], i) => <circle cx={x} cy={y} r={i === 2 ? 1.8 : 1.1} />)}
+      </svg>
+      <span class="skills__explore-eyebrow">Carte du ciel</span>
+      <span class="skills__explore-title">Arbre de compétences</span>
+      <span class="skills__explore-text">
+        Chaque compétence est une étoile. Découvrez d’où elle vient, à la HEPL, en stage, en hackathon ou sur le terrain, et sur quels projets je l’utilise.
+      </span>
+      <span class="skills__explore-cta">
+        Explorer l’arbre
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </span>
+    </button>
+  </div>
+</div>
+
+<SkillTree />
+
+<script>
+  import '@/scripts/skill-tree';
+</script>
+
+<style>
+  .skills {
+    max-width: 68rem;
+    margin-top: clamp(64px, 9vw, 112px);
+  }
+
+  .skills__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px 24px;
+    margin-bottom: 20px;
+  }
+
+  .skills__title {
+    font-size: 1.375rem;
+    font-weight: 500;
+    letter-spacing: -0.035em;
+    color: var(--ink);
+  }
+
+  .skills__count {
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    color: var(--muted);
+  }
+
+  .skills__grid {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: clamp(12px, 1.6vw, 20px);
+  }
+
+  .skills__card {
+    grid-column: span 4;
+    display: flex;
+    flex-direction: column;
+    padding: clamp(22px, 2.6vw, 30px);
+    border-radius: var(--radius-lg);
+    background: var(--paper-2);
+    box-shadow: 0 0 0 1px var(--line) inset;
+  }
+
+  .skills__card--developpement {
+    grid-column: span 8;
+    grid-row: span 2;
+  }
+
+  .skills__name {
+    font-size: 1.25rem;
+    font-weight: 500;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+  }
+
+  .skills__summary {
+    margin-top: 6px;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: var(--muted);
+  }
+
+  .skills__groups {
+    display: grid;
+    gap: 18px;
+    margin-top: 22px;
+  }
+
+  .skills__card--developpement .skills__groups {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 22px 28px;
+  }
+
+  .skills__group-name {
+    margin-bottom: 8px;
+    font-size: 0.8125rem;
+    color: var(--muted);
+  }
+
+  .skills__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .skills__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 34px;
+    padding: 0 12px 0 7px;
+    border: 0;
+    border-radius: 999px;
+    background: #fff;
+    color: var(--ink);
+    font: inherit;
+    font-size: 0.875rem;
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+    box-shadow:
+      0 0 0 1px var(--line),
+      0 4px 12px -8px rgb(11 11 16 / 0.25);
+    cursor: pointer;
+    transition:
+      transform 0.3s var(--ease-out),
+      box-shadow 0.3s var(--ease-out);
+  }
+
+  .skills__chip:hover,
+  .skills__chip:focus-visible {
+    transform: translateY(-2px);
+    box-shadow:
+      0 0 0 1px rgb(11 11 16 / 0.14),
+      0 10px 20px -10px rgb(11 11 16 / 0.35);
+  }
+
+  .skills__spark {
+    width: 20px;
+    height: 20px;
+    background: var(--ink);
+    clip-path: polygon(50% 8%, 59% 41%, 92% 50%, 59% 59%, 50% 92%, 41% 59%, 8% 50%, 41% 41%);
+  }
+
+  .skills__explore {
+    position: relative;
+    grid-column: span 8;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-end;
+    min-height: 300px;
+    padding: clamp(24px, 3vw, 36px);
+    overflow: hidden;
+    border: 0;
+    border-radius: var(--radius-lg);
+    background:
+      radial-gradient(70% 90% at 85% 20%, rgb(60 90 200 / 0.55), transparent 70%),
+      radial-gradient(60% 70% at 10% 100%, rgb(90 60 180 / 0.35), transparent 70%),
+      #05060d;
+    color: #fff;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    isolation: isolate;
+    box-shadow: 0 30px 70px -36px rgb(6 10 40 / 0.9);
+  }
+
+  .skills__sky {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    fill: #fff;
+    opacity: 0.8;
+  }
+
+  .skills__constellation {
+    position: absolute;
+    top: 8%;
+    right: 2%;
+    z-index: -1;
+    width: min(56%, 380px);
+    fill: #fff;
+    transition: transform 1.2s var(--ease-out);
+  }
+
+  .skills__constellation polyline {
+    fill: none;
+    stroke: rgb(190 215 255 / 0.55);
+    stroke-width: 0.35;
+  }
+
+  .skills__constellation circle {
+    filter: drop-shadow(0 0 1.5px rgb(170 210 255));
+  }
+
+  .skills__explore:hover .skills__constellation {
+    transform: scale(1.06) rotate(-2deg);
+  }
+
+  .skills__explore-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 1.0625rem;
+    color: rgb(190 210 255 / 0.75);
+  }
+
+  .skills__explore-title {
+    margin-top: 4px;
+    font-family: var(--font-serif);
+    font-variation-settings: 'opsz' 144;
+    font-size: clamp(2rem, 3.6vw, 2.75rem);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+
+  .skills__explore-text {
+    max-width: 30rem;
+    margin-top: 12px;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: rgb(255 255 255 / 0.72);
+  }
+
+  .skills__explore-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    height: 42px;
+    margin-top: 22px;
+    padding: 0 18px;
+    border-radius: 999px;
+    background: #fff;
+    color: var(--ink);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    transition: transform 0.3s var(--ease-out);
+  }
+
+  .skills__explore:hover .skills__explore-cta {
+    transform: translateX(4px);
+  }
+
+  @media (max-width: 1000px) {
+    .skills__card,
+    .skills__card--developpement,
+    .skills__explore {
+      grid-column: 1 / -1;
+      grid-row: auto;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .skills__card--developpement .skills__groups {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
