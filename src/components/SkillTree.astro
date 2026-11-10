@@ -66,7 +66,9 @@ const fullBox = contentBounds;
       <div class="node node--root" style={place('root')}>
         <span class="node__halo" aria-hidden="true"></span>
         <Image src={appIcon} alt="" width={104} height={104} densities={[1, 2]} class="node__app" />
-        <span class="node__label">{site.founder.name}</span>
+        <span class="node__caption">
+          <span class="node__label">{site.founder.name}</span>
+        </span>
       </div>
 
       {
@@ -74,8 +76,10 @@ const fullBox = contentBounds;
           <>
             <button class="node node--branch" type="button" style={place(branch.id)} data-node={branch.id} data-parent="root">
               <span class="node__star" aria-hidden="true" />
-              <span class="node__label">{branch.name}</span>
-              <span class="node__meta">{skillCount(branch.id)} compétences</span>
+              <span class="node__caption">
+                <span class="node__label">{branch.name}</span>
+                <span class="node__meta">{skillCount(branch.id)} compétences</span>
+              </span>
             </button>
             {branch.groups.map((group) => (
               <button
@@ -87,7 +91,9 @@ const fullBox = contentBounds;
                 data-parent={branch.id}
               >
                 <span class="node__star" aria-hidden="true" />
-                <span class="node__label">{group.name}</span>
+                <span class="node__caption">
+                  <span class="node__label">{group.name}</span>
+                </span>
               </button>
             ))}
           </>
@@ -107,11 +113,13 @@ const fullBox = contentBounds;
             <span class:list={['node__icon', { 'node__icon--star': !skill.tool }]}>
               {skill.tool ? <StackIcon tool={skill.tool} theme="dark" size={48} /> : <span class="node__spark" aria-hidden="true" />}
             </span>
-            <span class="node__label">{skill.name}</span>
-            <span class="node__dots" aria-hidden="true">
-              {skill.origins.map((origin) => (
-                <i style={`--c: ${originColors[origin]}`} />
-              ))}
+            <span class="node__caption">
+              <span class="node__label">{skill.name}</span>
+              <span class="node__dots" aria-hidden="true">
+                {skill.origins.map((origin) => (
+                  <i style={`--c: ${originColors[origin]}`} />
+                ))}
+              </span>
             </span>
           </button>
         ))
@@ -120,46 +128,6 @@ const fullBox = contentBounds;
   </div>
 
   <div class="tree__fade" aria-hidden="true"></div>
-
-  <div class="tree__list" data-tree-list>
-    {
-      skillTree.map((branch) => (
-        <section class="list__branch" aria-labelledby={`list-${branch.id}`}>
-          <button class="list__branch-head" type="button" data-node={branch.id}>
-            <span class="node__star" aria-hidden="true" />
-            <span>
-              <span class="list__branch-name" id={`list-${branch.id}`}>{branch.name}</span>
-              <span class="list__branch-meta">{skillCount(branch.id)} compétences</span>
-            </span>
-          </button>
-          {branch.groups.map((group) => (
-            <div class="list__group">
-              <p class="list__group-name">{group.name}</p>
-              <ul class="list__skills" role="list">
-                {group.skills.map((skill) => (
-                  <li>
-                    <button class="list__skill" type="button" data-node={skill.id} data-origins={skill.origins.join(' ')}>
-                      {skill.tool ? (
-                        <StackIcon tool={skill.tool} theme="dark" size={36} />
-                      ) : (
-                        <span class="list__spark" aria-hidden="true" />
-                      )}
-                      <span class="list__skill-name">{skill.name}</span>
-                      <span class="node__dots" aria-hidden="true">
-                        {skill.origins.map((origin) => (
-                          <i style={`--c: ${originColors[origin]}`} />
-                        ))}
-                      </span>
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </section>
-      ))
-    }
-  </div>
 
   <header class="tree__bar">
     <div class="tree__heading">
@@ -190,7 +158,7 @@ const fullBox = contentBounds;
     <button type="button" data-focus={JSON.stringify(fullBox)} aria-pressed="true">Tout</button>
     {
       skillTree.map((branch) => (
-        <button type="button" data-focus={JSON.stringify(branchBounds[branch.id])} aria-pressed="false">
+        <button type="button" data-focus={JSON.stringify(branchBounds[branch.id])} data-branch={branch.id} aria-pressed="false">
           {branch.name}
         </button>
       ))
@@ -210,7 +178,10 @@ const fullBox = contentBounds;
     </button>
   </div>
 
-  <p class="tree__hint" aria-hidden="true">Glissez pour explorer, cliquez sur une étoile</p>
+  <p class="tree__hint" aria-hidden="true">
+    <span class="tree__hint-pointer">Glissez pour explorer, molette pour zoomer, cliquez sur une étoile</span>
+    <span class="tree__hint-touch">Glissez pour explorer, pincez pour zoomer</span>
+  </p>
 
   <aside class="tree__panel" data-tree-panel tabindex="-1" hidden aria-label="Détail de la compétence">
     <button class="tree__panel-close" type="button" data-panel-close aria-label="Fermer le détail">
@@ -454,6 +425,60 @@ const fullBox = contentBounds;
     text-shadow: 0 1px 10px rgb(3 4 10 / 0.9);
   }
 
+  .node__caption {
+    display: grid;
+    justify-items: center;
+    gap: 6px;
+    transform-origin: 50% 0;
+    transition: opacity 0.35s var(--ease-out);
+  }
+
+  .node--root :global(.node__app),
+  .node--branch .node__star,
+  .node--group .node__star,
+  .node--skill .node__icon {
+    transition:
+      opacity 0.35s var(--ease-out),
+      transform 0.35s var(--ease-out),
+      box-shadow 0.35s var(--ease-out);
+  }
+
+  .node--root :global(.node__app) {
+    scale: var(--root-scale, 1);
+  }
+
+  .node--branch .node__star,
+  .node--group .node__star {
+    scale: var(--star-scale, 1);
+  }
+
+  .node--branch .node__caption {
+    scale: var(--branch-scale, 1);
+  }
+
+  .node--group .node__caption {
+    scale: var(--group-scale, 1);
+  }
+
+  .node--skill .node__icon {
+    scale: var(--icon-scale, 1);
+  }
+
+  .node--skill .node__caption {
+    scale: var(--label-scale, 1);
+  }
+
+  .tree__world[data-zoom='far'] .node--root .node__caption,
+  .tree__world[data-zoom='far'] .node--group .node__caption,
+  .tree__world[data-zoom='far'] .node--skill .node__caption,
+  .tree__world[data-zoom='mid'] .node--skill .node__caption {
+    opacity: 0;
+  }
+
+  .tree__world[data-zoom='mid'] .node--skill:is(:hover, :focus-visible, .is-active) .node__caption {
+    opacity: 1;
+  }
+
   .node__star {
     position: relative;
     display: block;
@@ -485,8 +510,11 @@ const fullBox = contentBounds;
     pointer-events: none;
   }
 
-  .node--root .node__label {
+  .node--root .node__caption {
     margin-top: 10px;
+  }
+
+  .node--root .node__label {
     font-size: 18px;
     color: rgb(255 255 255 / 0.7);
   }
@@ -504,8 +532,12 @@ const fullBox = contentBounds;
       0 0 80px 20px rgb(90 140 255 / 0.3);
   }
 
-  .node--branch .node__label {
+  .node--branch .node__caption {
     margin-top: 8px;
+    gap: 4px;
+  }
+
+  .node--branch .node__label {
     font-size: 34px;
     font-weight: 500;
     line-height: 1;
@@ -571,7 +603,6 @@ const fullBox = contentBounds;
   }
 
   .node__spark,
-  .list__spark,
   .panel__icon--star {
     display: block;
     width: 18px;
@@ -622,8 +653,7 @@ const fullBox = contentBounds;
     text-underline-offset: 4px;
   }
 
-  .tree.is-filtered .node--skill:not(.is-match),
-  .tree.is-filtered .list__skill:not(.is-match) {
+  .tree.is-filtered .node--skill:not(.is-match) {
     opacity: 0.16;
   }
 
@@ -635,8 +665,8 @@ const fullBox = contentBounds;
     position: absolute;
     inset: 0;
     background:
-      linear-gradient(rgb(3 4 10 / 0.92), rgb(3 4 10 / 0) 190px),
-      linear-gradient(0deg, rgb(3 4 10 / 0.88), rgb(3 4 10 / 0) 150px);
+      linear-gradient(rgb(3 4 10 / 0.96), rgb(3 4 10 / 0.84) 120px, rgb(3 4 10 / 0) 220px),
+      linear-gradient(0deg, rgb(3 4 10 / 0.9), rgb(3 4 10 / 0) 150px);
     pointer-events: none;
   }
 
@@ -789,6 +819,10 @@ const fullBox = contentBounds;
     right: calc(clamp(20px, 3vw, 36px) + min(380px, 100% - 40px) + 16px);
   }
 
+  .tree.has-explored .tree__hint {
+    opacity: 0;
+  }
+
   .tree__hint {
     position: absolute;
     left: 50%;
@@ -798,6 +832,7 @@ const fullBox = contentBounds;
     color: rgb(190 210 255 / 0.55);
     transform: translateX(-50%);
     pointer-events: none;
+    transition: opacity 0.6s var(--ease-out);
   }
 
   .tree__panel {
@@ -998,44 +1033,70 @@ const fullBox = contentBounds;
     margin-top: 28px;
   }
 
-  .tree__list {
+  .tree__hint-touch {
     display: none;
   }
 
-  @media (max-width: 760px) {
-    .tree__viewport,
-    .tree__focus,
-    .tree__zoom,
-    .tree__hint,
-    .tree__fade {
+  @media (hover: none) {
+    .tree__hint-pointer {
       display: none;
     }
 
-    .tree[open] {
-      display: flex;
-      flex-direction: column;
+    .tree__hint-touch {
+      display: inline;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .tree__bar {
+      padding: 16px 16px 0 20px;
     }
 
-    .tree__bar {
-      position: relative;
-      z-index: 2;
-      order: 1;
-      padding-bottom: 14px;
+    .tree__eyebrow,
+    .tree__stats {
+      display: none;
+    }
+
+    .tree__title {
+      padding-top: 6px;
+      font-size: 1.5rem;
+    }
+
+    .tree__close {
+      width: 42px;
+      height: 42px;
+    }
+
+    .tree__focus {
+      top: 70px;
+      left: 0;
+      right: 0;
+      gap: 6px;
+      padding: 0 16px;
+      overflow-x: auto;
+      border-radius: 0;
+      background: none;
+      box-shadow: none;
+      backdrop-filter: none;
+      transform: none;
+      scrollbar-width: none;
+    }
+
+    .tree__focus button {
+      flex: none;
+      background: rgb(255 255 255 / 0.08);
+      box-shadow: 0 0 0 1px rgb(255 255 255 / 0.1) inset;
     }
 
     .tree__legend {
-      position: relative;
-      left: auto;
-      bottom: auto;
-      z-index: 2;
-      order: 2;
-      flex: none;
+      left: 0;
+      right: 0;
+      bottom: max(16px, env(safe-area-inset-bottom));
       flex-wrap: nowrap;
       max-width: none;
-      padding: 0 20px 14px;
+      padding: 0 16px;
       overflow-x: auto;
       scrollbar-width: none;
-      box-shadow: 0 1px 0 rgb(255 255 255 / 0.08);
     }
 
     .tree__legend-label {
@@ -1046,114 +1107,35 @@ const fullBox = contentBounds;
       flex: none;
     }
 
-    .tree__list {
-      position: relative;
-      order: 3;
-      flex: 1;
-      min-height: 0;
-      display: grid;
-      align-content: start;
-      gap: 40px;
-      padding: 28px 20px 64px;
-      overflow-y: auto;
-      overscroll-behavior: contain;
+    .tree__zoom {
+      right: 16px;
+      bottom: calc(max(16px, env(safe-area-inset-bottom)) + 50px);
     }
 
-    .list__branch {
-      position: relative;
-      padding-left: 22px;
+    .tree__zoom button {
+      width: 40px;
+      height: 40px;
     }
 
-    .list__branch::before {
-      content: '';
-      position: absolute;
-      top: 18px;
-      bottom: 0;
-      left: 6px;
-      width: 1px;
-      background: linear-gradient(rgb(190 215 255 / 0.5), rgb(190 215 255 / 0.05));
+    .tree:has(.tree__panel:not([hidden])) .tree__zoom {
+      right: 16px;
+      opacity: 0;
+      pointer-events: none;
     }
 
-    .list__branch-head {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-left: -22px;
-      padding: 0;
-      border: 0;
-      background: none;
-      color: #fff;
-      font: inherit;
-      text-align: left;
+    .tree__hint {
+      top: auto;
+      left: 20px;
+      bottom: calc(max(16px, env(safe-area-inset-bottom)) + 58px);
+      max-width: calc(100% - 100px);
+      font-size: 16px;
+      transform: none;
     }
 
-    .list__branch-head .node__star {
-      width: 14px;
-      height: 14px;
-      box-shadow:
-        0 0 0 4px rgb(255 255 255 / 0.08),
-        0 0 22px 4px rgb(140 190 255 / 0.7);
-    }
-
-    .list__branch-name {
-      display: block;
-      line-height: 1.1;
-      font-size: 1.75rem;
-      font-weight: 500;
-      letter-spacing: -0.045em;
-    }
-
-    .list__branch-meta {
-      font-family: var(--font-mono);
-      font-size: 17px;
-      color: rgb(190 210 255 / 0.65);
-    }
-
-    .list__group {
-      margin-top: 22px;
-    }
-
-    .list__group-name {
-      margin-bottom: 10px;
-      font-family: var(--font-mono);
-      font-size: 18px;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: rgb(200 220 255 / 0.8);
-    }
-
-    .list__skills {
-      display: grid;
-      gap: 8px;
-    }
-
-    .list__skill {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      width: 100%;
-      padding: 8px 14px 8px 8px;
-      border: 0;
-      border-radius: 16px;
-      background: rgb(255 255 255 / 0.05);
-      color: #fff;
-      font: inherit;
-      font-size: 0.9375rem;
-      text-align: left;
-      box-shadow: 0 0 0 1px rgb(255 255 255 / 0.07) inset;
-      transition: opacity 0.4s;
-    }
-
-    .list__skill :global(img) {
-      border-radius: 10px;
-    }
-
-    .list__spark {
-      margin: 9px;
-    }
-
-    .list__skill-name {
-      flex: 1;
+    .tree__fade {
+      background:
+        linear-gradient(rgb(3 4 10 / 0.96), rgb(3 4 10 / 0.84) 100px, rgb(3 4 10 / 0) 170px),
+        linear-gradient(0deg, rgb(3 4 10 / 0.9), rgb(3 4 10 / 0) 130px);
     }
 
     .tree__panel {
@@ -1163,10 +1145,10 @@ const fullBox = contentBounds;
       bottom: 0;
       z-index: 3;
       width: auto;
-      max-height: 78dvh;
-      padding: 26px 22px 34px;
+      max-height: 56dvh;
+      padding: 24px 20px calc(28px + env(safe-area-inset-bottom));
       border-radius: 26px 26px 0 0;
-      background: rgb(12 14 26 / 0.92);
+      background: rgb(12 14 26 / 0.9);
       animation-name: sheet-in;
     }
   }
