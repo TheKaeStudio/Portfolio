@@ -13,6 +13,7 @@ import { getProjects, type Project } from '@/data/projects';
 import { categoryLabel } from '@/data/services';
 import { site } from '@/data/site';
 import { toolName } from '@/data/tools';
+import { getReviews, initials } from '@/data/reviews';
 
 export const getStaticPaths = (async () => {
   const projects = await getProjects();
@@ -34,6 +35,9 @@ const { project, others } = Astro.props;
 const { title, client, summary, categories, deliverables, year, industry, stack, icon, cover, coverAlt, links, gallery } =
   project.data;
 const [primaryLink, ...secondaryLinks] = links;
+const reviews = await getReviews();
+const review = reviews.find((entry) => entry.project.id === project.id);
+const contactIndex = String(reviews.length > 0 ? 8 : 7).padStart(2, '0');
 const linkLabel = (label: string) => (label.includes('.') ? 'Voir le site' : `Voir sur ${label}`);
 const { Content } = await render(project);
 const pageUrl = new URL(`/realisations/${project.id}`, Astro.site).href;
@@ -171,6 +175,26 @@ const jsonLd = [
     </div>
 
     {
+      review && (
+        <figure class="project__review narrow">
+          {review.placeholder && <span class="project__review-badge">Exemple</span>}
+          <blockquote>
+            <p>{review.quote}</p>
+          </blockquote>
+          <figcaption>
+            <span class="project__review-avatar" aria-hidden="true">
+              {initials(review.author)}
+            </span>
+            <span>
+              <span class="project__review-name">{review.author}</span>
+              <span class="project__review-role">{review.role}</span>
+            </span>
+          </figcaption>
+        </figure>
+      )
+    }
+
+    {
       gallery.length > 0 && (
         <section class="project__gallery container" aria-label={`Galerie du projet ${title}`}>
           {gallery.map((item) => (
@@ -191,7 +215,7 @@ const jsonLd = [
     </div>
   </section>
 
-  <Contact />
+  <Contact index={contactIndex} />
 
   <Footer slot="footer" />
 </Base>
@@ -393,6 +417,81 @@ const jsonLd = [
     height: 6px;
     border-radius: 50%;
     background: var(--ink);
+  }
+
+  .project__review {
+    position: relative;
+    display: grid;
+    gap: 28px;
+    margin-bottom: clamp(64px, 9vw, 112px);
+    padding: clamp(28px, 4vw, 44px);
+    border-radius: var(--radius-lg);
+    background: var(--paper-2);
+    box-shadow: 0 0 0 1px var(--line) inset;
+  }
+
+  .project__review blockquote {
+    margin: 0;
+    font-size: clamp(1.25rem, 2vw, 1.5rem);
+    line-height: 1.4;
+    letter-spacing: -0.025em;
+    color: var(--ink);
+    text-wrap: pretty;
+  }
+
+  .project__review blockquote p::before {
+    content: '«\00a0';
+  }
+
+  .project__review blockquote p::after {
+    content: '\00a0»';
+  }
+
+  .project__review figcaption {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .project__review-avatar {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: #fff;
+    font-size: 0.8125rem;
+    font-weight: 500;
+  }
+
+  .project__review-name,
+  .project__review-role {
+    display: block;
+  }
+
+  .project__review-name {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  .project__review-role {
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+
+  .project__review-badge {
+    justify-self: start;
+    margin-bottom: -8px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #fff;
+    font-family: var(--font-mono);
+    font-size: 0.9375rem;
+    color: var(--muted);
+    box-shadow: 0 0 0 1px var(--line);
   }
 
   .project__gallery {
