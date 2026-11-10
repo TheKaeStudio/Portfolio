@@ -39,22 +39,25 @@ const home = Astro.url.pathname === '/' ? '' : '/';
     gap: 16px;
     height: var(--header-h);
     padding: 0 var(--gutter);
-    color: #fff;
+    color: var(--ink);
+    transition: color 0.5s var(--ease-out);
   }
 
   .header::before {
     content: '';
     position: absolute;
-    inset: 0;
+    inset: 0 0 -24px;
     z-index: -1;
-    background: linear-gradient(100deg, rgb(1 114 252 / 0.94), rgb(0 160 254 / 0.92));
-    backdrop-filter: blur(12px) saturate(1.4);
-    box-shadow:
-      0 1px 0 rgb(255 255 255 / 0.18) inset,
-      0 12px 32px -18px rgb(0 70 180 / 0.6);
+    background: linear-gradient(to bottom, rgb(255 255 255 / 0.92), rgb(255 255 255 / 0.6) 55%, rgb(255 255 255 / 0));
+    backdrop-filter: blur(6px);
+    mask-image: linear-gradient(to bottom, #000 60%, transparent);
     opacity: 1;
     transition: opacity 0.5s var(--ease-out);
     pointer-events: none;
+  }
+
+  .header[data-over-hero='true']:not(.is-past) {
+    color: #fff;
   }
 
   .header[data-over-hero='true']:not(.is-past)::before {
@@ -101,8 +104,8 @@ const home = Astro.url.pathname === '/' ? '' : '/';
     gap: 8px;
   }
 
-  .header .pill--glass {
-    background: rgb(255 255 255 / 0.16);
+  .header[data-over-hero='true']:not(.is-past) .pill--glass {
+    background: rgb(255 255 255 / 0.14);
     color: #fff;
     box-shadow:
       0 1px 0 rgb(255 255 255 / 0.3) inset,
@@ -110,19 +113,13 @@ const home = Astro.url.pathname === '/' ? '' : '/';
     backdrop-filter: blur(10px);
   }
 
-  .header .pill--glass:hover {
-    background: rgb(255 255 255 / 0.28);
-    color: #fff;
+  .header[data-over-hero='true']:not(.is-past) .pill--glass:hover {
+    background: rgb(255 255 255 / 0.24);
   }
 
-  .header .pill--primary {
+  .header[data-over-hero='true']:not(.is-past) .pill--primary {
     background: #fff;
-    color: var(--blue-700);
-    box-shadow: 0 10px 24px -12px rgb(6 42 115 / 0.55);
-  }
-
-  .header .pill--primary:hover {
-    background: var(--sky-50);
+    color: var(--ink);
   }
 
   @media (max-width: 900px) {
