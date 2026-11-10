@@ -1,7 +1,15 @@
 ---
 import Base from '@/layouts/Base.astro';
+import Header from '@/components/Header.astro';
+import Hero from '@/components/Hero.astro';
 ---
 
 <Base>
-  <h1>The Kae Studio</h1>
+  <Header slot="header" overHero />
+  <Hero />
+  <div style="height: 120vh"></div>
 </Base>
+
+<script>
+  import '@/scripts/parallax';
+</script>

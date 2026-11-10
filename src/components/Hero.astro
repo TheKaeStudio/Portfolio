@@ -1,0 +1,257 @@
+---
+import { Picture } from 'astro:assets';
+import sky from '@/assets/hero/sky.jpg';
+import LogoMark from '@/components/LogoMark.astro';
+import { site } from '@/data/site';
+
+const { latitude, longitude, city, countryCode } = site.location;
+const coords = `${latitude.toFixed(4)}° N, ${longitude.toFixed(4)}° E`;
+---
+
+<section class="hero" data-hero aria-labelledby="hero-title">
+  <div class="hero__sky" data-parallax="0.35" aria-hidden="true">
+    <Picture
+      src={sky}
+      alt=""
+      formats={['avif', 'webp']}
+      widths={[768, 1280, 1920, 2400]}
+      sizes="100vw"
+      loading="eager"
+      fetchpriority="high"
+      class="hero__img"
+    />
+  </div>
+
+  <div class="hero__emblem" data-parallax="0.15" aria-hidden="true">
+    <div class="hero__halo"></div>
+    <LogoMark size={120} class="hero__mark" />
+  </div>
+
+  <div class="hero__content" data-parallax="0.08">
+    <h1 id="hero-title" class="hero__title serif">
+      <span class="hero__the">The</span>
+      <span class="hero__name">Kae Studio</span>
+    </h1>
+    <p class="hero__subtitle serif">Artisan du numérique</p>
+  </div>
+
+  <div class="hero__footer" aria-hidden="true">
+    <span>{coords}</span>
+    <span class="hero__scroll">Défiler</span>
+    <span>{city}, {countryCode}</span>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    place-items: center;
+    min-height: max(640px, 100svh);
+    overflow: hidden;
+    color: #fff;
+    background: linear-gradient(180deg, var(--indigo-800), var(--indigo-500) 60%, #fff);
+  }
+
+  .hero__sky {
+    position: absolute;
+    inset: -4% 0 -28%;
+    z-index: -2;
+    will-change: transform;
+  }
+
+  .hero__sky :global(picture),
+  .hero__sky :global(img) {
+    width: 100%;
+    height: 100%;
+  }
+
+  .hero__sky :global(img) {
+    object-fit: cover;
+    object-position: 50% 30%;
+    animation: drift 40s var(--ease-in-out) infinite alternate;
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    inset: auto 0 0;
+    height: 22%;
+    z-index: -1;
+    background: linear-gradient(to bottom, rgb(255 255 255 / 0), #fff);
+    pointer-events: none;
+  }
+
+  .hero__emblem {
+    position: absolute;
+    top: clamp(96px, 16vh, 170px);
+    left: 50%;
+    width: 120px;
+    margin-left: -60px;
+    color: #fff;
+    opacity: 0.95;
+  }
+
+  .hero__emblem :global(.hero__mark) {
+    position: relative;
+    filter: drop-shadow(0 0 18px rgb(255 255 255 / 0.55)) drop-shadow(0 10px 40px rgb(42 34 168 / 0.6));
+    animation: float 7s var(--ease-in-out) infinite alternate;
+  }
+
+  .hero__halo {
+    position: absolute;
+    inset: -60%;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgb(255 255 255 / 0.35), rgb(255 255 255 / 0) 70%);
+    animation: pulse 7s var(--ease-in-out) infinite alternate;
+  }
+
+  .hero__content {
+    position: relative;
+    display: grid;
+    justify-items: center;
+    padding: 18vh var(--gutter) 0;
+    text-align: center;
+  }
+
+  .hero__title {
+    display: grid;
+    font-weight: 400;
+    line-height: 0.86;
+    letter-spacing: -0.025em;
+  }
+
+  .hero__the,
+  .hero__name,
+  .hero__subtitle {
+    background: linear-gradient(180deg, #ffffff 15%, #dcd9ff 85%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    filter: drop-shadow(0 6px 28px rgb(29 23 115 / 0.35));
+  }
+
+  .hero__the {
+    justify-self: start;
+    margin-left: 0.6em;
+    font-size: clamp(40px, 6vw, 84px);
+  }
+
+  .hero__name {
+    font-size: clamp(76px, 15.5vw, 236px);
+    white-space: nowrap;
+  }
+
+  .hero__subtitle {
+    margin-top: clamp(10px, 1.6vw, 22px);
+    font-size: clamp(26px, 3.6vw, 52px);
+    letter-spacing: -0.01em;
+    filter: drop-shadow(0 2px 16px rgb(29 23 115 / 0.55));
+  }
+
+  .hero__footer {
+    position: absolute;
+    inset: auto var(--gutter) 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    letter-spacing: 0.04em;
+    color: var(--indigo-700);
+    opacity: 0.7;
+  }
+
+  .hero__scroll {
+    position: relative;
+    padding-bottom: 18px;
+  }
+
+  .hero__scroll::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: 0;
+    width: 1px;
+    height: 12px;
+    background: currentColor;
+    animation: scroll-cue 2.2s var(--ease-in-out) infinite;
+  }
+
+  @keyframes drift {
+    from {
+      transform: scale(1.04) translate3d(-1%, 0, 0);
+    }
+    to {
+      transform: scale(1.08) translate3d(1%, -1%, 0);
+    }
+  }
+
+  @keyframes float {
+    from {
+      transform: translateY(-6px) rotate(-2deg);
+    }
+    to {
+      transform: translateY(8px) rotate(2deg);
+    }
+  }
+
+  @keyframes pulse {
+    from {
+      opacity: 0.6;
+      transform: scale(0.92);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1.05);
+    }
+  }
+
+  @keyframes scroll-cue {
+    0% {
+      transform: scaleY(0);
+      transform-origin: top;
+    }
+    45% {
+      transform: scaleY(1);
+      transform-origin: top;
+    }
+    55% {
+      transform: scaleY(1);
+      transform-origin: bottom;
+    }
+    100% {
+      transform: scaleY(0);
+      transform-origin: bottom;
+    }
+  }
+
+  @media (max-width: 640px) {
+    .hero__sky {
+      inset: -4% 0 -8%;
+    }
+
+    .hero__content {
+      padding-top: 12vh;
+    }
+
+    .hero__emblem {
+      width: 84px;
+      margin-left: -42px;
+    }
+
+    .hero__emblem :global(.hero__mark) {
+      width: 84px;
+      height: 84px;
+    }
+
+    .hero__footer span:not(.hero__scroll) {
+      display: none;
+    }
+
+    .hero__footer {
+      justify-content: center;
+    }
+  }
+</style>
