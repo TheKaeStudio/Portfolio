@@ -35,8 +35,8 @@ import AppIcon from '@/components/AppIcon.astro';
   .philosophy__icon::before {
     content: '';
     position: absolute;
-    width: 320px;
-    height: 320px;
+    width: min(320px, 100vw);
+    aspect-ratio: 1;
     border-radius: 50%;
     background: radial-gradient(closest-side, rgb(31 143 255 / 0.45), rgb(31 143 255 / 0));
     pointer-events: none;

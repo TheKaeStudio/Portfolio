@@ -242,6 +242,13 @@ const projects = new Map((await getProjects()).map((p) => [p.id, p]));
     }
   }
 
+  @media (hover: none) {
+    .client__card,
+    .client__cta {
+      display: none;
+    }
+  }
+
   .clients__item--more span {
     display: grid;
     place-items: center;

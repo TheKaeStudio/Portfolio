@@ -354,4 +354,19 @@ import { servicePills, services } from '@/data/services';
       display: none;
     }
   }
+
+  @media (max-width: 400px) {
+    .service__row {
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+    }
+
+    .service__index {
+      display: none;
+    }
+
+    .service__title {
+      font-size: 1.25rem;
+    }
+  }
 </style>

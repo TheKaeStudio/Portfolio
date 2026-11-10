@@ -35,7 +35,8 @@ const { src, type = 'image' } = Astro.props;
 
 <style>
   .vignette {
-    width: clamp(300px, 48vw, 600px);
+    width: clamp(240px, 48vw, 600px);
+    max-width: 100%;
     margin: 0 auto clamp(8px, 2vw, 24px);
     pointer-events: none;
   }
