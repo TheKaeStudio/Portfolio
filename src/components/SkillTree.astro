@@ -1,0 +1,1221 @@
+---
+import { Image } from 'astro:assets';
+import appIcon from '@/assets/brand/app-icon.png';
+import StackIcon from '@/components/StackIcon.astro';
+import { getProjects, type Project } from '@/data/projects';
+import { skillTree, allSkills, origins, originIds, type OriginId, type Skill } from '@/data/skills';
+import { world, treeLinks, nodeById, branchBounds, contentBounds } from '@/data/skill-layout';
+import { site } from '@/data/site';
+
+const projects = await getProjects();
+
+const originColors: Record<OriginId, string> = {
+  hepl: '#7cc4ff',
+  nsi: '#b9a2ff',
+  mkit: '#5fe3b8',
+  hackathon: '#ffd166',
+  terrain: '#ff9eb8',
+  autodidacte: '#eef1ff',
+};
+
+const usedOn = (skill: Skill): Project[] => {
+  const ids = new Set(skill.projects ?? []);
+  if (skill.tool) {
+    for (const project of projects) {
+      if ((project.data.stack as string[]).includes(skill.tool)) ids.add(project.id);
+    }
+  }
+  return projects.filter((project) => ids.has(project.id));
+};
+
+const toolCount = allSkills.filter((skill) => skill.tool).length;
+const skillCount = (branchId: string) => allSkills.filter((skill) => skill.branch.id === branchId).length;
+const projectCount = (branchId: string) =>
+  projects.filter((project) => (project.data.categories as string[]).includes(branchId)).length;
+
+const place = (id: string) => {
+  const node = nodeById.get(id)!;
+  return `left: ${node.x}px; top: ${node.y}px; --d: ${Math.hypot(node.x - world.width / 2, node.y - world.height / 2).toFixed(0)}`;
+};
+
+const fullBox = contentBounds;
+---
+
+<dialog class="tree" id="skill-tree" aria-labelledby="tree-title" data-tree>
+  <canvas class="tree__sky" data-tree-sky aria-hidden="true"></canvas>
+
+  <div class="tree__viewport" data-tree-viewport>
+    <div class="tree__world" data-tree-world data-box={JSON.stringify(fullBox)} style={`width: ${world.width}px; height: ${world.height}px`}>
+      <svg class="tree__links" width={world.width} height={world.height} viewBox={`0 0 ${world.width} ${world.height}`} aria-hidden="true">
+        {
+          treeLinks.map((link, i) => (
+            <line
+              class={`link link--${link.kind}`}
+              x1={link.from.x}
+              y1={link.from.y}
+              x2={link.to.x}
+              y2={link.to.y}
+              pathLength="1"
+              data-link={link.to.id}
+              style={`--i: ${i}`}
+            />
+          ))
+        }
+      </svg>
+
+      <div class="node node--root" style={place('root')}>
+        <span class="node__halo" aria-hidden="true"></span>
+        <Image src={appIcon} alt="" width={104} height={104} densities={[1, 2]} class="node__app" />
+        <span class="node__label">{site.founder.name}</span>
+      </div>
+
+      {
+        skillTree.map((branch) => (
+          <>
+            <button class="node node--branch" type="button" style={place(branch.id)} data-node={branch.id} data-parent="root">
+              <span class="node__star" aria-hidden="true" />
+              <span class="node__label">{branch.name}</span>
+              <span class="node__meta">{skillCount(branch.id)} compétences</span>
+            </button>
+            {branch.groups.map((group) => (
+              <button
+                class="node node--group"
+                type="button"
+                style={place(`${branch.id}:${group.id}`)}
+                data-node={branch.id}
+                data-self={`${branch.id}:${group.id}`}
+                data-parent={branch.id}
+              >
+                <span class="node__star" aria-hidden="true" />
+                <span class="node__label">{group.name}</span>
+              </button>
+            ))}
+          </>
+        ))
+      }
+
+      {
+        allSkills.map((skill) => (
+          <button
+            class="node node--skill"
+            type="button"
+            style={place(skill.id)}
+            data-node={skill.id}
+            data-parent={`${skill.branch.id}:${skill.group.id}`}
+            data-origins={skill.origins.join(' ')}
+          >
+            <span class:list={['node__icon', { 'node__icon--star': !skill.tool }]}>
+              {skill.tool ? <StackIcon tool={skill.tool} theme="dark" size={48} /> : <span class="node__spark" aria-hidden="true" />}
+            </span>
+            <span class="node__label">{skill.name}</span>
+            <span class="node__dots" aria-hidden="true">
+              {skill.origins.map((origin) => (
+                <i style={`--c: ${originColors[origin]}`} />
+              ))}
+            </span>
+          </button>
+        ))
+      }
+    </div>
+  </div>
+
+  <div class="tree__fade" aria-hidden="true"></div>
+
+  <div class="tree__list" data-tree-list>
+    {
+      skillTree.map((branch) => (
+        <section class="list__branch" aria-labelledby={`list-${branch.id}`}>
+          <button class="list__branch-head" type="button" data-node={branch.id}>
+            <span class="node__star" aria-hidden="true" />
+            <span>
+              <span class="list__branch-name" id={`list-${branch.id}`}>{branch.name}</span>
+              <span class="list__branch-meta">{skillCount(branch.id)} compétences</span>
+            </span>
+          </button>
+          {branch.groups.map((group) => (
+            <div class="list__group">
+              <p class="list__group-name">{group.name}</p>
+              <ul class="list__skills" role="list">
+                {group.skills.map((skill) => (
+                  <li>
+                    <button class="list__skill" type="button" data-node={skill.id} data-origins={skill.origins.join(' ')}>
+                      {skill.tool ? (
+                        <StackIcon tool={skill.tool} theme="dark" size={36} />
+                      ) : (
+                        <span class="list__spark" aria-hidden="true" />
+                      )}
+                      <span class="list__skill-name">{skill.name}</span>
+                      <span class="node__dots" aria-hidden="true">
+                        {skill.origins.map((origin) => (
+                          <i style={`--c: ${originColors[origin]}`} />
+                        ))}
+                      </span>
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </section>
+      ))
+    }
+  </div>
+
+  <header class="tree__bar">
+    <div class="tree__heading">
+      <p class="tree__eyebrow">Parcours</p>
+      <h2 class="tree__title" id="tree-title">Arbre de compétences</h2>
+      <p class="tree__stats">{allSkills.length} compétences, dont {toolCount} outils, réparties en {skillTree.length} constellations</p>
+    </div>
+    <button class="tree__close" type="button" data-tree-close aria-label="Fermer l’arbre de compétences" autofocus>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      </svg>
+    </button>
+  </header>
+
+  <div class="tree__legend" role="group" aria-label="Filtrer par origine">
+    <span class="tree__legend-label">Appris via</span>
+    {
+      originIds.map((id) => (
+        <button class="tree__origin" type="button" data-origin={id} aria-pressed="false" title={origins[id].detail}>
+          <i style={`--c: ${originColors[id]}`} aria-hidden="true" />
+          {origins[id].label}
+        </button>
+      ))
+    }
+  </div>
+
+  <nav class="tree__focus" aria-label="Constellations">
+    <button type="button" data-focus={JSON.stringify(fullBox)} aria-pressed="true">Tout</button>
+    {
+      skillTree.map((branch) => (
+        <button type="button" data-focus={JSON.stringify(branchBounds[branch.id])} aria-pressed="false">
+          {branch.name}
+        </button>
+      ))
+    }
+  </nav>
+
+  <div class="tree__zoom" role="group" aria-label="Zoom">
+    <button type="button" data-zoom="in" aria-label="Zoomer">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      </svg>
+    </button>
+    <button type="button" data-zoom="out" aria-label="Dézoomer">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+      </svg>
+    </button>
+  </div>
+
+  <p class="tree__hint" aria-hidden="true">Glissez pour explorer, cliquez sur une étoile</p>
+
+  <aside class="tree__panel" data-tree-panel tabindex="-1" hidden aria-label="Détail de la compétence">
+    <button class="tree__panel-close" type="button" data-panel-close aria-label="Fermer le détail">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+      </svg>
+    </button>
+
+    {
+      skillTree.map((branch) => (
+        <article class="panel" data-panel={branch.id} hidden>
+          <p class="panel__path">Constellation</p>
+          <h3 class="panel__title panel__title--branch">{branch.name}</h3>
+          <p class="panel__note">{branch.summary}</p>
+          <dl class="panel__figures">
+            <div>
+              <dt>Compétences</dt>
+              <dd>{skillCount(branch.id)}</dd>
+            </div>
+            <div>
+              <dt>Projets</dt>
+              <dd>{projectCount(branch.id)}</dd>
+            </div>
+          </dl>
+          <h4 class="panel__label">Branches</h4>
+          <ul class="panel__tags" role="list">
+            {branch.groups.map((group) => (
+              <li>{group.name}</li>
+            ))}
+          </ul>
+          <a class="panel__cta" href={`/?filtre=${branch.id}#realisations`}>
+            Voir les réalisations
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </a>
+        </article>
+      ))
+    }
+
+    {
+      allSkills.map((skill) => {
+        const used = usedOn(skill);
+        return (
+          <article class="panel" data-panel={skill.id} hidden>
+            <div class="panel__head">
+              {skill.tool ? (
+                <StackIcon tool={skill.tool} theme="dark" size={56} class="panel__icon" />
+              ) : (
+                <span class="panel__icon panel__icon--star" aria-hidden="true" />
+              )}
+              <div>
+                <p class="panel__path">
+                  {skill.branch.name} · {skill.group.name}
+                </p>
+                <h3 class="panel__title">{skill.name}</h3>
+              </div>
+            </div>
+            <p class="panel__note">{skill.note}</p>
+
+            <h4 class="panel__label">Où je l’ai appris</h4>
+            <ul class="panel__origins" role="list">
+              {skill.origins.map((origin) => (
+                <li>
+                  <i style={`--c: ${originColors[origin]}`} aria-hidden="true" />
+                  <span>
+                    <strong>{origins[origin].label}</strong>
+                    {origins[origin].detail}
+                  </span>
+                </li>
+              ))}
+            </ul>
+
+            {used.length > 0 && (
+              <>
+                <h4 class="panel__label">Utilisé sur</h4>
+                <ul class="panel__projects" role="list">
+                  {used.map((project) => (
+                    <li>
+                      <a href={`/realisations/${project.id}`}>
+                        <Image src={project.data.cover} alt="" widths={[96, 192]} sizes="48px" loading="lazy" />
+                        <span>
+                          <strong>{project.data.title}</strong>
+                          {project.data.year}
+                        </span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+
+            {skill.links && (
+              <>
+                <h4 class="panel__label">À voir aussi</h4>
+                <ul class="panel__links" role="list">
+                  {skill.links.map((link) => (
+                    <li>
+                      <a href={link.href} target="_blank" rel="noopener">
+                        {link.label}
+                        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                          <path d="M7 17 17 7M9 7h8v8" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+          </article>
+        );
+      })
+    }
+  </aside>
+</dialog>
+
+<style>
+  .tree {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    border: 0;
+    color: #fff;
+    background:
+      radial-gradient(60% 50% at 18% 30%, rgb(46 76 170 / 0.32), transparent 70%),
+      radial-gradient(50% 45% at 82% 72%, rgb(90 58 170 / 0.24), transparent 70%),
+      radial-gradient(40% 40% at 70% 18%, rgb(0 140 220 / 0.14), transparent 70%),
+      #03040a;
+    font-family: var(--font-sans);
+  }
+
+  .tree::backdrop {
+    background: #03040a;
+  }
+
+  .tree[open] {
+    display: block;
+    animation: tree-in 0.7s var(--ease-out);
+  }
+
+  :global(html:has(.tree[open])) {
+    overflow: hidden;
+  }
+
+  .tree__sky {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .tree__viewport {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    cursor: grab;
+    touch-action: none;
+  }
+
+  .tree__viewport.is-dragging {
+    cursor: grabbing;
+  }
+
+  .tree__world {
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform-origin: 0 0;
+    will-change: transform;
+  }
+
+  .tree__world.is-animating {
+    transition: transform 0.9s var(--ease-out);
+  }
+
+  .tree__links {
+    position: absolute;
+    inset: 0;
+    overflow: visible;
+  }
+
+  .link {
+    stroke: rgb(170 200 255 / 0.26);
+    stroke-width: 1.1;
+    stroke-linecap: round;
+    vector-effect: non-scaling-stroke;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    transition:
+      stroke 0.4s,
+      opacity 0.4s;
+  }
+
+  .link--branch {
+    stroke: rgb(190 215 255 / 0.5);
+    stroke-width: 1.8;
+  }
+
+  .link--group {
+    stroke: rgb(180 205 255 / 0.36);
+    stroke-width: 1.4;
+  }
+
+  .tree[open] .link {
+    animation: draw 1.6s var(--ease-out) forwards;
+    animation-delay: calc(var(--i) * 18ms);
+  }
+
+  .link.is-lit {
+    stroke: rgb(255 255 255 / 0.9);
+  }
+
+  .node {
+    position: absolute;
+    display: grid;
+    justify-items: center;
+    gap: 8px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: inherit;
+    font: inherit;
+    text-align: center;
+    cursor: pointer;
+    transition: opacity 0.4s var(--ease-out);
+  }
+
+  .tree[open] .node {
+    animation: node-in 0.9s var(--ease-out) both;
+    animation-delay: calc(var(--d) * 0.9ms);
+  }
+
+  .node__label {
+    white-space: nowrap;
+    text-shadow: 0 1px 10px rgb(3 4 10 / 0.9);
+  }
+
+  .node__star {
+    position: relative;
+    display: block;
+    border-radius: 50%;
+    background: #fff;
+  }
+
+  .node--root {
+    transform: translate(-50%, -52px);
+    cursor: default;
+  }
+
+  .node--root :global(.node__app) {
+    position: relative;
+    width: 104px;
+    height: 104px;
+    filter: drop-shadow(0 0 28px rgb(0 160 255 / 0.55));
+  }
+
+  .node__halo {
+    position: absolute;
+    top: 52px;
+    left: 50%;
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgb(70 160 255 / 0.28), transparent 65%);
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+
+  .node--root .node__label {
+    margin-top: 10px;
+    font-size: 18px;
+    color: rgb(255 255 255 / 0.7);
+  }
+
+  .node--branch {
+    transform: translate(-50%, -13px);
+  }
+
+  .node--branch .node__star {
+    width: 26px;
+    height: 26px;
+    box-shadow:
+      0 0 0 6px rgb(255 255 255 / 0.08),
+      0 0 30px 6px rgb(140 190 255 / 0.75),
+      0 0 80px 20px rgb(90 140 255 / 0.3);
+  }
+
+  .node--branch .node__label {
+    margin-top: 6px;
+    font-family: var(--font-serif);
+    font-variation-settings: 'opsz' 144;
+    font-size: 38px;
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+
+  .node--branch .node__meta {
+    font-family: var(--font-mono);
+    font-size: 19px;
+    color: rgb(190 210 255 / 0.7);
+  }
+
+  .node--group {
+    grid-auto-flow: row;
+    transform: translate(-50%, -7px);
+  }
+
+  .node--group .node__star {
+    width: 14px;
+    height: 14px;
+    box-shadow:
+      0 0 0 4px rgb(255 255 255 / 0.07),
+      0 0 18px 3px rgb(150 195 255 / 0.65);
+  }
+
+  .node--group .node__label {
+    font-family: var(--font-mono);
+    font-size: 21px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: rgb(200 220 255 / 0.85);
+  }
+
+  .node--skill {
+    gap: 7px;
+    transform: translate(-50%, -24px);
+  }
+
+  .node__icon {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 13px;
+    box-shadow:
+      0 0 0 1px rgb(255 255 255 / 0.14),
+      0 0 26px rgb(110 165 255 / 0.28);
+    transition:
+      transform 0.35s var(--ease-out),
+      box-shadow 0.35s var(--ease-out);
+  }
+
+  .node__icon :global(img) {
+    width: 100%;
+    height: 100%;
+    border-radius: inherit;
+  }
+
+  .node__icon--star {
+    border-radius: 50%;
+    box-shadow: none;
+  }
+
+  .node__spark,
+  .list__spark,
+  .panel__icon--star {
+    display: block;
+    width: 18px;
+    height: 18px;
+    background: #fff;
+    clip-path: polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%);
+    filter: drop-shadow(0 0 6px rgb(160 205 255));
+  }
+
+  .node--skill .node__label {
+    font-size: 16px;
+    color: rgb(255 255 255 / 0.86);
+  }
+
+  .node__dots {
+    display: flex;
+    gap: 4px;
+  }
+
+  .node__dots i {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--c);
+    box-shadow: 0 0 6px var(--c);
+  }
+
+  .node--skill:hover .node__icon,
+  .node--skill:focus-visible .node__icon,
+  .node--skill.is-active .node__icon {
+    transform: scale(1.14);
+    box-shadow:
+      0 0 0 2px #fff,
+      0 0 36px rgb(160 205 255 / 0.7);
+  }
+
+  .node--skill:hover .node__icon--star,
+  .node--skill.is-active .node__icon--star {
+    box-shadow: 0 0 34px rgb(160 205 255 / 0.55);
+  }
+
+  .node:focus-visible {
+    outline: none;
+  }
+
+  .node:focus-visible .node__label {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .tree.is-filtered .node--skill:not(.is-match),
+  .tree.is-filtered .list__skill:not(.is-match) {
+    opacity: 0.16;
+  }
+
+  .tree.is-filtered .link--skill:not(.is-match) {
+    opacity: 0.15;
+  }
+
+  .tree__fade {
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(rgb(3 4 10 / 0.92), rgb(3 4 10 / 0) 190px),
+      linear-gradient(0deg, rgb(3 4 10 / 0.88), rgb(3 4 10 / 0) 150px);
+    pointer-events: none;
+  }
+
+  .tree__bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: clamp(20px, 3vw, 32px) clamp(20px, 3vw, 36px) 0;
+    pointer-events: none;
+  }
+
+  .tree__bar > * {
+    pointer-events: auto;
+  }
+
+  .tree__eyebrow {
+    font-family: var(--font-mono);
+    font-size: 18px;
+    color: rgb(190 210 255 / 0.65);
+  }
+
+  .tree__title {
+    font-family: var(--font-serif);
+    font-variation-settings: 'opsz' 144;
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    font-weight: 400;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+
+  .tree__stats {
+    margin-top: 6px;
+    font-size: 0.875rem;
+    color: rgb(255 255 255 / 0.6);
+  }
+
+  .tree__close,
+  .tree__zoom button,
+  .tree__panel-close {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    border: 0;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 0.1);
+    color: #fff;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 0 0 1px rgb(255 255 255 / 0.12) inset;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+
+  .tree__close:hover,
+  .tree__zoom button:hover,
+  .tree__panel-close:hover {
+    background: rgb(255 255 255 / 0.2);
+  }
+
+  .tree__legend {
+    position: absolute;
+    left: clamp(20px, 3vw, 36px);
+    bottom: clamp(20px, 3vw, 32px);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px;
+    max-width: calc(100% - 180px);
+  }
+
+  .tree__legend-label {
+    width: 100%;
+    margin-bottom: 2px;
+    font-family: var(--font-mono);
+    font-size: 17px;
+    color: rgb(190 210 255 / 0.6);
+  }
+
+  .tree__origin,
+  .tree__focus button {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    height: 34px;
+    padding: 0 13px;
+    border: 0;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.07);
+    color: rgb(255 255 255 / 0.82);
+    font: inherit;
+    font-size: 0.8125rem;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 0 0 1px rgb(255 255 255 / 0.1) inset;
+    cursor: pointer;
+    transition:
+      background-color 0.3s,
+      color 0.3s;
+  }
+
+  .tree__origin i {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--c);
+    box-shadow: 0 0 8px var(--c);
+  }
+
+  .tree__origin:hover,
+  .tree__focus button:hover {
+    background: rgb(255 255 255 / 0.14);
+  }
+
+  .tree__origin[aria-pressed='true'],
+  .tree__focus button[aria-pressed='true'] {
+    background: #fff;
+    color: #0b0b10;
+  }
+
+  .tree__focus {
+    position: absolute;
+    left: 50%;
+    top: clamp(24px, 3vw, 34px);
+    display: flex;
+    gap: 6px;
+    padding: 5px;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.06);
+    box-shadow: 0 0 0 1px rgb(255 255 255 / 0.1) inset;
+    backdrop-filter: blur(14px);
+    transform: translateX(-50%);
+  }
+
+  .tree__focus button {
+    box-shadow: none;
+    background: transparent;
+  }
+
+  .tree__zoom {
+    position: absolute;
+    right: clamp(20px, 3vw, 36px);
+    bottom: clamp(20px, 3vw, 32px);
+    display: grid;
+    gap: 8px;
+    transition: right 0.5s var(--ease-out);
+  }
+
+  .tree:has(.tree__panel:not([hidden])) .tree__zoom {
+    right: calc(clamp(20px, 3vw, 36px) + min(380px, 100% - 40px) + 16px);
+  }
+
+  .tree__hint {
+    position: absolute;
+    left: 50%;
+    top: calc(clamp(24px, 3vw, 34px) + 58px);
+    font-family: var(--font-mono);
+    font-size: 17px;
+    color: rgb(190 210 255 / 0.55);
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
+
+  .tree__panel {
+    position: absolute;
+    top: 104px;
+    right: clamp(20px, 3vw, 36px);
+    bottom: 96px;
+    width: min(380px, calc(100% - 40px));
+    padding: 28px;
+    overflow-y: auto;
+    border-radius: 26px;
+    background: rgb(12 14 26 / 0.74);
+    backdrop-filter: blur(22px) saturate(140%);
+    box-shadow:
+      0 0 0 1px rgb(255 255 255 / 0.1) inset,
+      0 30px 80px -30px rgb(0 0 0 / 0.8);
+    animation: panel-in 0.5s var(--ease-out);
+    overscroll-behavior: contain;
+  }
+
+  .tree__panel:focus {
+    outline: none;
+  }
+
+  .tree__panel-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 34px;
+    height: 34px;
+  }
+
+  .panel__head {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding-right: 36px;
+  }
+
+  .panel__head :global(.panel__icon) {
+    border-radius: 15px;
+    box-shadow: 0 0 30px rgb(110 165 255 / 0.35);
+  }
+
+  .panel__icon--star {
+    width: 34px;
+    height: 34px;
+    margin: 11px;
+  }
+
+  .panel__path {
+    font-family: var(--font-mono);
+    font-size: 17px;
+    color: rgb(190 210 255 / 0.65);
+  }
+
+  .panel__title {
+    font-size: 1.5rem;
+    font-weight: 500;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+  }
+
+  .panel__title--branch {
+    font-family: var(--font-serif);
+    font-variation-settings: 'opsz' 144;
+    font-size: 2.25rem;
+    font-weight: 400;
+  }
+
+  .panel__note {
+    margin-top: 18px;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    color: rgb(255 255 255 / 0.78);
+  }
+
+  .panel__label {
+    margin: 26px 0 12px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: rgb(255 255 255 / 0.5);
+  }
+
+  .panel__origins,
+  .panel__projects,
+  .panel__links,
+  .panel__tags {
+    display: grid;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .panel__origins li {
+    display: flex;
+    gap: 12px;
+    align-items: baseline;
+    font-size: 0.875rem;
+    color: rgb(255 255 255 / 0.6);
+  }
+
+  .panel__origins i {
+    flex: none;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--c);
+    box-shadow: 0 0 10px var(--c);
+    transform: translateY(-1px);
+  }
+
+  .panel__origins strong,
+  .panel__projects strong {
+    display: block;
+    font-weight: 500;
+    color: #fff;
+  }
+
+  .panel__projects a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 6px;
+    border-radius: 14px;
+    font-size: 0.8125rem;
+    color: rgb(255 255 255 / 0.55);
+    transition: background-color 0.3s;
+  }
+
+  .panel__projects a:hover {
+    background: rgb(255 255 255 / 0.08);
+  }
+
+  .panel__projects :global(img) {
+    width: 48px;
+    height: 48px;
+    border-radius: 11px;
+    object-fit: cover;
+  }
+
+  .panel__links a,
+  .panel__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #fff;
+  }
+
+  .panel__links a:hover,
+  .panel__cta:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .panel__figures {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 24px 0 0;
+  }
+
+  .panel__figures div {
+    padding: 16px;
+    border-radius: 16px;
+    background: rgb(255 255 255 / 0.06);
+  }
+
+  .panel__figures dt {
+    font-size: 0.8125rem;
+    color: rgb(255 255 255 / 0.55);
+  }
+
+  .panel__figures dd {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: 2.25rem;
+    line-height: 1.1;
+  }
+
+  .panel__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .panel__tags li {
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 0.08);
+    font-size: 0.8125rem;
+  }
+
+  .panel__cta {
+    margin-top: 28px;
+  }
+
+  .tree__list {
+    display: none;
+  }
+
+  @media (max-width: 760px) {
+    .tree__viewport,
+    .tree__focus,
+    .tree__zoom,
+    .tree__hint,
+    .tree__fade {
+      display: none;
+    }
+
+    .tree[open] {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .tree__bar {
+      position: relative;
+      z-index: 2;
+      order: 1;
+      padding-bottom: 14px;
+    }
+
+    .tree__legend {
+      position: relative;
+      left: auto;
+      bottom: auto;
+      z-index: 2;
+      order: 2;
+      flex: none;
+      flex-wrap: nowrap;
+      max-width: none;
+      padding: 0 20px 14px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      box-shadow: 0 1px 0 rgb(255 255 255 / 0.08);
+    }
+
+    .tree__legend-label {
+      display: none;
+    }
+
+    .tree__origin {
+      flex: none;
+    }
+
+    .tree__list {
+      position: relative;
+      order: 3;
+      flex: 1;
+      min-height: 0;
+      display: grid;
+      align-content: start;
+      gap: 40px;
+      padding: 28px 20px 64px;
+      overflow-y: auto;
+      overscroll-behavior: contain;
+    }
+
+    .list__branch {
+      position: relative;
+      padding-left: 22px;
+    }
+
+    .list__branch::before {
+      content: '';
+      position: absolute;
+      top: 18px;
+      bottom: 0;
+      left: 6px;
+      width: 1px;
+      background: linear-gradient(rgb(190 215 255 / 0.5), rgb(190 215 255 / 0.05));
+    }
+
+    .list__branch-head {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-left: -22px;
+      padding: 0;
+      border: 0;
+      background: none;
+      color: #fff;
+      font: inherit;
+      text-align: left;
+    }
+
+    .list__branch-head .node__star {
+      width: 14px;
+      height: 14px;
+      box-shadow:
+        0 0 0 4px rgb(255 255 255 / 0.08),
+        0 0 22px 4px rgb(140 190 255 / 0.7);
+    }
+
+    .list__branch-name {
+      display: block;
+      font-family: var(--font-serif);
+      font-variation-settings: 'opsz' 144;
+      font-size: 1.875rem;
+      line-height: 1.1;
+    }
+
+    .list__branch-meta {
+      font-family: var(--font-mono);
+      font-size: 17px;
+      color: rgb(190 210 255 / 0.65);
+    }
+
+    .list__group {
+      margin-top: 22px;
+    }
+
+    .list__group-name {
+      margin-bottom: 10px;
+      font-family: var(--font-mono);
+      font-size: 18px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: rgb(200 220 255 / 0.8);
+    }
+
+    .list__skills {
+      display: grid;
+      gap: 8px;
+    }
+
+    .list__skill {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      width: 100%;
+      padding: 8px 14px 8px 8px;
+      border: 0;
+      border-radius: 16px;
+      background: rgb(255 255 255 / 0.05);
+      color: #fff;
+      font: inherit;
+      font-size: 0.9375rem;
+      text-align: left;
+      box-shadow: 0 0 0 1px rgb(255 255 255 / 0.07) inset;
+      transition: opacity 0.4s;
+    }
+
+    .list__skill :global(img) {
+      border-radius: 10px;
+    }
+
+    .list__spark {
+      margin: 9px;
+    }
+
+    .list__skill-name {
+      flex: 1;
+    }
+
+    .tree__panel {
+      top: auto;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 3;
+      width: auto;
+      max-height: 78dvh;
+      padding: 26px 22px 34px;
+      border-radius: 26px 26px 0 0;
+      background: rgb(12 14 26 / 0.92);
+      animation-name: sheet-in;
+    }
+  }
+
+  @keyframes tree-in {
+    from {
+      opacity: 0;
+    }
+  }
+
+  @keyframes draw {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  @keyframes node-in {
+    from {
+      opacity: 0;
+      scale: 0.6;
+    }
+  }
+
+  @keyframes panel-in {
+    from {
+      opacity: 0;
+      transform: translateX(24px);
+    }
+  }
+
+  @keyframes sheet-in {
+    from {
+      transform: translateY(100%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tree[open],
+    .tree[open] .node,
+    .tree__panel {
+      animation: none;
+    }
+
+    .tree[open] .link {
+      animation: none;
+      stroke-dashoffset: 0;
+    }
+  }
+</style>
