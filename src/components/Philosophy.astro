@@ -1,9 +1,12 @@
 ---
 import SectionHead from '@/components/SectionHead.astro';
+import AppIcon from '@/components/AppIcon.astro';
 ---
 
 <section class="section philosophy" aria-labelledby="philosophy-title">
-  <slot name="visual" />
+  <div class="philosophy__icon">
+    <AppIcon size={176} />
+  </div>
   <div class="column centered">
     <SectionHead index="04" label="La philosophie Kae" id="philosophy-title" />
     <p class="statement" data-reveal>
@@ -22,6 +25,37 @@ import SectionHead from '@/components/SectionHead.astro';
 </section>
 
 <style>
+  .philosophy__icon {
+    position: relative;
+    display: grid;
+    place-items: center;
+    margin: 0 auto clamp(48px, 7vw, 80px);
+  }
+
+  .philosophy__icon::before {
+    content: '';
+    position: absolute;
+    width: 320px;
+    height: 320px;
+    border-radius: 50%;
+    background: radial-gradient(closest-side, rgb(166 162 247 / 0.45), rgb(166 162 247 / 0));
+    pointer-events: none;
+  }
+
+  .philosophy__icon :global(.app-icon) {
+    position: relative;
+    animation: icon-float 7s var(--ease-in-out) infinite alternate;
+  }
+
+  @keyframes icon-float {
+    from {
+      transform: translateY(-6px) rotate(-3deg);
+    }
+    to {
+      transform: translateY(6px) rotate(2deg);
+    }
+  }
+
   .philosophy__body {
     margin-top: clamp(28px, 4vw, 44px);
   }

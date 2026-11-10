@@ -17,7 +17,6 @@ import portrait from '@/assets/about/portrait.jpg';
 import Vignette from '@/components/Vignette.astro';
 import clientsArt from '@/assets/sections/clients.jpg';
 import servicesArt from '@/assets/sections/services.jpg';
-import philosophyArt from '@/assets/sections/philosophy.jpg';
 import worksArt from '@/assets/sections/works.jpg';
 
 const home = new URL('/', Astro.site).href;
@@ -115,9 +114,7 @@ const jsonLd = [
   <Services>
     <Vignette slot="visual" src={servicesArt} />
   </Services>
-  <Philosophy>
-    <Vignette slot="visual" src={philosophyArt} />
-  </Philosophy>
+  <Philosophy />
   <Works>
     <Vignette slot="visual" src={worksArt} />
   </Works>
