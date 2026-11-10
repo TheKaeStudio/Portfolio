@@ -240,3 +240,73 @@ button {
   color: #fff;
   box-shadow: var(--shadow-dark);
 }
+
+.section {
+  position: relative;
+  padding-block: clamp(96px, 14vw, 180px);
+}
+
+.statement {
+  font-size: clamp(1.5rem, 2.5vw, 2.125rem);
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+  font-weight: 400;
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+.prose {
+  font-size: clamp(1.0625rem, 1.25vw, 1.1875rem);
+  line-height: 1.45;
+  letter-spacing: -0.012em;
+  color: var(--ink);
+}
+
+.prose > * + * {
+  margin-top: 1.4em;
+}
+
+.soft {
+  color: var(--muted);
+}
+
+.shine {
+  background: linear-gradient(100deg, var(--indigo-700), #8b5cf6 55%, var(--indigo-500));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.reveal-ready [data-reveal] .w {
+  color: #d3d3da;
+  transition: color 0.35s var(--ease-out);
+}
+
+.reveal-ready [data-reveal] .w.is-lit {
+  color: inherit;
+}
+
+.reveal-ready [data-reveal] .shine .w {
+  background: linear-gradient(100deg, var(--indigo-700), #8b5cf6 55%, var(--indigo-500));
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+.reveal-ready [data-reveal] .shine .w.is-lit {
+  color: transparent;
+}
+
+.centered {
+  text-align: center;
+}
+
+.link {
+  color: var(--ink);
+  background: linear-gradient(currentColor, currentColor) 0 100% / 100% 1px no-repeat;
+  transition: background-size 0.4s var(--ease-out);
+}
+
+.link:hover {
+  background-size: 0 1px;
+  background-position: 100% 100%;
+}

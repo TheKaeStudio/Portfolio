@@ -1,0 +1,41 @@
+---
+import SectionHead from '@/components/SectionHead.astro';
+---
+
+<section class="section intro" aria-labelledby="intro-title">
+  <div class="column">
+    <SectionHead index="01" label="Le studio" id="intro-title" align="start" />
+    <p class="statement intro__lead" data-reveal>
+      The Kae Studio conçoit et développe des expériences digitales de bout en bout : <span class="soft">design, code et image.</span
+      >
+    </p>
+    <div class="prose intro__body" data-reveal>
+      <p>
+        Mon travail couvre le design d’interfaces et d’expérience utilisateur, le développement de sites,
+        d’applications mobiles et de logiciels, le montage vidéo et le graphisme, le tout porté par un vrai souci du
+        détail. <span class="soft">C’est ce dernier point qui fait toute la différence.</span>
+      </p>
+      <p>
+        En alliant sensibilité créative et rigueur technique, je crée des parcours qui captivent et qui convertissent. <span class="soft">Le digital, je le vis et je le respire au quotidien.</span>
+      </p>
+      <p>
+        Comme un artisan, mon objectif est simple mais ambitieux : transformer une idée brute en une expérience <span class="shine">qui marque les esprits.</span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .intro {
+    padding-top: clamp(48px, 8vw, 96px);
+  }
+
+  .intro__lead {
+    max-width: 22ch;
+    margin-bottom: clamp(36px, 5vw, 56px);
+  }
+
+  .intro__body {
+    max-width: 30rem;
+  }
+</style>
