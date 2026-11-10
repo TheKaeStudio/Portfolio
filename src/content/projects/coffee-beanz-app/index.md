@@ -6,7 +6,7 @@ categories: [ui-ux, developpement]
 deliverables: [Application mobile, UI/UX, Développement]
 year: '2026'
 industry: [Restauration, Coffee shops]
-stack: [figma, expo, photoshop]
+stack: [figma, expo, postgresql, prisma, clerk, stripe, cloudflare, railway, photoshop]
 order: 1
 icon:
   src: ./icone.png
