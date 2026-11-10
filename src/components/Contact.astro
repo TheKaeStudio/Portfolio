@@ -3,13 +3,18 @@ import SectionHead from '@/components/SectionHead.astro';
 import LogoMark from '@/components/LogoMark.astro';
 import { site } from '@/data/site';
 
+interface Props {
+  index?: string;
+}
+
+const { index = '07' } = Astro.props;
 const subject = encodeURIComponent('Nouveau projet avec The Kae Studio');
 ---
 
 <section class="section contact" id="contact" aria-labelledby="contact-title">
   <slot name="visual" />
   <div class="column centered">
-    <SectionHead index="07" label="Envie de travailler ensemble ?" id="contact-title" />
+    <SectionHead index={index} label="Envie de travailler ensemble ?" id="contact-title" />
     <p class="statement" data-reveal>
       Un travail clair, avec une touche de magie, <span class="soft">pour des projets qui comptent.</span>
     </p>

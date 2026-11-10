@@ -6,6 +6,11 @@ import portrait from '@/assets/about/portrait.jpg';
 import { site } from '@/data/site';
 import { timeline } from '@/data/timeline';
 
+interface Props {
+  index?: string;
+}
+
+const { index = '06' } = Astro.props;
 const github = site.socials.find((s) => s.label === 'GitHub');
 const awards = timeline.find((g) => g.title === 'Distinctions')?.entries ?? [];
 const groups = timeline.filter((g) => g.title !== 'Distinctions');
@@ -19,7 +24,7 @@ const leaves = Array.from({ length: 6 }, (_, i) => {
 <section class="section about" id="parcours" aria-labelledby="about-title">
   <slot name="visual" />
   <div class="column centered">
-    <SectionHead index="06" label="Qui suis-je" id="about-title" />
+    <SectionHead index={index} label="Qui suis-je" id="about-title" />
     <p class="statement" data-reveal>
       Un studio, une seule paire de mains.
     </p>

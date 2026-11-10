@@ -1,0 +1,226 @@
+---
+import { Image } from 'astro:assets';
+import SectionHead from '@/components/SectionHead.astro';
+import { initials, type ResolvedReview } from '@/data/reviews';
+
+interface Props {
+  reviews: ResolvedReview[];
+  index: string;
+}
+
+const { reviews, index } = Astro.props;
+---
+
+<section class="section reviews" id="avis" aria-labelledby="reviews-title">
+  <div class="column centered">
+    <SectionHead index={index} label="Avis clients" id="reviews-title" />
+    <p class="statement" data-reveal>
+      Des projets menés ensemble, <span class="soft">racontés par ceux qui les ont vécus.</span>
+    </p>
+  </div>
+
+  <div class="reviews__grid container">
+    {
+      reviews.map((review) => (
+        <figure class="review">
+          {review.placeholder && <span class="review__badge">Exemple</span>}
+          <svg class="review__mark" width="30" height="24" viewBox="0 0 30 24" fill="currentColor" aria-hidden="true">
+            <path d="M0 24V14.4C0 6.6 4.2 1.8 12.6 0l1.5 3.4C9.7 4.6 7.5 7.1 7.2 11H12.6V24H0Zm16.8 0V14.4C16.8 6.6 21 1.8 29.4 0l1.5 3.4c-4.4 1.2-6.6 3.7-6.9 7.6h5.4V24H16.8Z" />
+          </svg>
+          <blockquote class="review__quote">
+            <p>{review.quote}</p>
+          </blockquote>
+          <figcaption class="review__author">
+            <span class="review__avatar" aria-hidden="true">
+              {initials(review.author)}
+            </span>
+            <span>
+              <span class="review__name">{review.author}</span>
+              <span class="review__role">{review.role}</span>
+            </span>
+          </figcaption>
+          <a class="review__project" href={`/realisations/${review.project.id}`}>
+            <Image src={review.project.data.cover} alt="" widths={[80, 160]} sizes="40px" loading="lazy" />
+            <span>
+              <span class="review__project-label">Projet</span>
+              <span class="review__project-title">{review.project.data.title}</span>
+            </span>
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </a>
+        </figure>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .reviews__grid {
+    columns: 3 300px;
+    column-gap: clamp(14px, 1.8vw, 22px);
+    max-width: 72rem;
+    margin-top: clamp(40px, 6vw, 72px);
+  }
+
+  .review {
+    position: relative;
+    display: grid;
+    gap: 22px;
+    margin: 0 0 clamp(14px, 1.8vw, 22px);
+    padding: clamp(24px, 2.6vw, 32px);
+    border-radius: var(--radius-lg);
+    background: var(--paper-2);
+    box-shadow: 0 0 0 1px var(--line) inset;
+    break-inside: avoid;
+  }
+
+  .review__badge {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #fff;
+    font-family: var(--font-mono);
+    font-size: 0.9375rem;
+    color: var(--muted);
+    box-shadow: 0 0 0 1px var(--line);
+  }
+
+  .review__mark {
+    color: var(--muted-2);
+  }
+
+  .review__quote {
+    margin: 0;
+    font-size: 1.0625rem;
+    line-height: 1.55;
+    letter-spacing: -0.012em;
+    color: var(--ink);
+    text-wrap: pretty;
+  }
+
+  .review__author {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .review__avatar {
+    display: grid;
+    flex: none;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: var(--ink);
+    color: #fff;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+
+  .review__name,
+  .review__role {
+    display: block;
+  }
+
+  .review__name {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--ink);
+  }
+
+  .review__role {
+    font-size: 0.875rem;
+    color: var(--muted);
+  }
+
+  .review__project {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 14px 8px 8px;
+    border-radius: 16px;
+    background: #fff;
+    color: var(--ink);
+    box-shadow:
+      0 0 0 1px var(--line),
+      0 6px 16px -12px rgb(11 11 16 / 0.3);
+    transition:
+      transform 0.3s var(--ease-out),
+      box-shadow 0.3s var(--ease-out);
+  }
+
+  .review__project:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 0 0 1px rgb(11 11 16 / 0.12),
+      0 12px 24px -14px rgb(11 11 16 / 0.4);
+  }
+
+  .review__project :global(img) {
+    flex: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    object-fit: cover;
+  }
+
+  .review__project > span {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .review__project-label {
+    display: block;
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+
+  .review__project-title {
+    display: block;
+    overflow: hidden;
+    font-size: 0.875rem;
+    font-weight: 500;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .review__project svg {
+    flex: none;
+    color: var(--muted);
+    transition: transform 0.3s var(--ease-out);
+  }
+
+  .review__project:hover svg {
+    transform: translateX(3px);
+  }
+
+  @media (max-width: 720px) {
+    .reviews__grid {
+      display: flex;
+      gap: 12px;
+      width: 100%;
+      padding-inline: var(--gutter);
+      overflow-x: auto;
+      columns: auto;
+      scroll-snap-type: x mandatory;
+      scroll-padding-inline: var(--gutter);
+      scrollbar-width: none;
+    }
+
+    .review {
+      flex: none;
+      align-content: start;
+      width: min(86%, 340px);
+      margin: 0;
+      scroll-snap-align: start;
+    }
+
+    .review__project {
+      margin-top: auto;
+    }
+  }
+</style>

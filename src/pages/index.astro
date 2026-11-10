@@ -9,9 +9,11 @@ import Philosophy from '@/components/Philosophy.astro';
 import Works from '@/components/Works.astro';
 import About from '@/components/About.astro';
 import Contact from '@/components/Contact.astro';
+import Reviews from '@/components/Reviews.astro';
 import Footer from '@/components/Footer.astro';
 import { site } from '@/data/site';
 import { getProjects } from '@/data/projects';
+import { getReviews } from '@/data/reviews';
 import sky from '@/assets/hero/sky.jpg';
 import portrait from '@/assets/about/portrait.jpg';
 import Vignette from '@/components/Vignette.astro';
@@ -21,6 +23,8 @@ import worksArt from '@/assets/sections/works.webm';
 
 const home = new URL('/', Astro.site).href;
 const projects = await getProjects();
+const reviews = await getReviews();
+const number = (n: number) => String(n + (reviews.length > 0 ? 1 : 0)).padStart(2, '0');
 
 const jsonLd = [
   {
@@ -118,8 +122,9 @@ const jsonLd = [
   <Works>
     <Vignette slot="visual" src={worksArt} type='video' />
   </Works>
-  <About />
-  <Contact />
+  {reviews.length > 0 && <Reviews reviews={reviews} index="06" />}
+  <About index={number(6)} />
+  <Contact index={number(7)} />
   <Footer slot="footer" />
 </Base>
 
