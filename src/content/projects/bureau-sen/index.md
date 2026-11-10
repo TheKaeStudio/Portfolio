@@ -19,20 +19,21 @@ gallery:
   - src: ./simulateur-mobile.jpg
     alt: Choix du type de prêt sur mobile
     frame: phone
-    span: third
+    span: half
   - src: ./resultat-mobile.jpg
     alt: Résultat de la simulation et mensualité sur mobile
     frame: phone
-    span: third
+    span: half
   - src: ./contenu.jpg
     alt: Contenu éditorial optimisé pour la recherche « crédit Verviers »
     frame: browser
     url: bureausen.be
-    span: third
+    span: half
   - src: ./guide.jpg
     alt: Guide des types de prêts disponibles à Verviers
     frame: browser
     url: bureausen.be
+    span: half
 ---
 
 ## Le contexte

@@ -19,20 +19,21 @@ gallery:
   - src: ./simulateur-mobile.jpg
     alt: Simulateur de salaire sur mobile
     frame: phone
-    span: third
+    span: half
   - src: ./accueil-mobile.jpg
     alt: Page d’accueil Varynia sur mobile, avec le globe des consultants
     frame: phone
-    span: third
+    span: half
   - src: ./simulation-detaillee.jpg
     alt: Détail ligne par ligne d’une simulation de rémunération
     frame: browser
     url: varynia.com/simulation
-    span: third
+    span: half
   - src: ./accueil-desktop.jpg
     alt: Section d’accueil de Varynia avec le globe et les consultants dans le monde
     frame: browser
     url: varynia.com
+    span: half
   - src: ./avantages.jpg
     alt: Bloc des avantages du portage salarial
     frame: browser

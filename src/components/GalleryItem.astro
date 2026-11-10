@@ -1,0 +1,194 @@
+---
+import type { ImageMetadata } from 'astro';
+import { Image } from 'astro:assets';
+
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  frame: 'browser' | 'phone' | 'none';
+  url?: string;
+  span: 'full' | 'half' | 'third';
+  dark?: boolean;
+}
+
+const { src, alt, frame, url, span, dark = false } = Astro.props;
+const widths = {
+  full: [640, 960, 1280, 1600, 2000],
+  half: [480, 720, 960, 1280],
+  third: [360, 540, 720, 960],
+}[span];
+const sizes = {
+  full: '(max-width: 1240px) calc(100vw - 40px), 1200px',
+  half: '(max-width: 720px) calc(100vw - 40px), 600px',
+  third: '(max-width: 720px) calc(100vw - 40px), 400px',
+}[span];
+---
+
+<figure class:list={['gallery-item', `gallery-item--${span}`, `gallery-item--${frame}`]}>
+  {
+    frame === 'browser' && (
+      <div class:list={['browser', { 'browser--dark': dark }]}>
+        <div class="browser__bar" aria-hidden="true">
+          <i />
+          <i />
+          <i />
+          {url && <span class="browser__url">{url}</span>}
+        </div>
+        <Image src={src} alt={alt} widths={widths} sizes={sizes} formats={['avif', 'webp']} loading="lazy" />
+      </div>
+    )
+  }
+  {
+    frame === 'phone' && (
+      <div class="phone">
+        <span class="phone__island" aria-hidden="true" />
+        <Image src={src} alt={alt} widths={widths} sizes={sizes} loading="lazy" />
+      </div>
+    )
+  }
+  {
+    frame === 'none' && (
+      <div class="plain">
+        <Image src={src} alt={alt} widths={widths} sizes={sizes} loading="lazy" />
+      </div>
+    )
+  }
+</figure>
+
+<style>
+  .gallery-item {
+    grid-column: 1 / -1;
+    display: grid;
+    align-content: center;
+  }
+
+  .gallery-item--half {
+    grid-column: span 3;
+  }
+
+  .gallery-item--third {
+    grid-column: span 2;
+  }
+
+  .gallery-item--full.gallery-item--browser {
+    width: 100%;
+    max-width: 1040px;
+    justify-self: center;
+  }
+
+  .gallery-item--phone {
+    padding: clamp(24px, 3vw, 40px);
+    border-radius: var(--radius-lg);
+    background: radial-gradient(120% 100% at 50% 0%, var(--lavender), var(--paper-2));
+  }
+
+  .browser {
+    overflow: hidden;
+    border-radius: 14px;
+    background: #fff;
+    box-shadow:
+      0 0 0 1px var(--line),
+      var(--shadow-card);
+  }
+
+  .browser__bar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    height: 34px;
+    padding: 0 14px;
+    background: #f2f2f5;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .browser__bar i {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: #ff5f57;
+  }
+
+  .browser__bar i:nth-child(2) {
+    background: #febc2e;
+  }
+
+  .browser__bar i:nth-child(3) {
+    background: #28c840;
+  }
+
+  .browser__url {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 3px 42px;
+    border-radius: 7px;
+    background: #fff;
+    font-size: 0.75rem;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .browser--dark {
+    background: #111;
+  }
+
+  .browser--dark .browser__bar {
+    background: #1b1b1f;
+    border-color: rgb(255 255 255 / 0.06);
+  }
+
+  .browser--dark .browser__url {
+    background: #2a2a30;
+    color: #a3a3ad;
+  }
+
+  .browser :global(img) {
+    width: 100%;
+  }
+
+  .phone {
+    position: relative;
+    width: min(100%, 300px);
+    margin-inline: auto;
+    padding: 9px;
+    border-radius: 46px;
+    background: linear-gradient(145deg, #2b2b31, #0a0a0d 40%, #1d1d22);
+    box-shadow:
+      0 0 0 1.5px #3a3a42 inset,
+      0 40px 70px -30px rgb(11 11 16 / 0.6);
+  }
+
+  .phone :global(img) {
+    width: 100%;
+    aspect-ratio: 390 / 760;
+    object-fit: cover;
+    object-position: top;
+    border-radius: 37px;
+  }
+
+  .phone__island {
+    position: absolute;
+    top: 19px;
+    left: 50%;
+    z-index: 1;
+    width: 30%;
+    height: 22px;
+    border-radius: 12px;
+    background: #000;
+    transform: translateX(-50%);
+  }
+
+  .plain :global(img) {
+    width: 100%;
+    border-radius: var(--radius);
+    box-shadow: 0 0 0 1px var(--line);
+  }
+
+  @media (max-width: 720px) {
+    .gallery-item--half,
+    .gallery-item--third {
+      grid-column: 1 / -1;
+    }
+  }
+</style>
