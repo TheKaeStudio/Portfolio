@@ -77,7 +77,7 @@ export const skillTree: SkillBranch[] = [
             name: 'Astro',
             tool: 'astro',
             origins: ['autodidacte'],
-            note: 'Le framework de ce portfolio : des pages statiques, légères et pensées pour le référencement.',
+            note: 'Le framework de ce portfolio\u00a0: des pages statiques, légères et pensées pour le référencement.',
           },
         ],
       },
@@ -117,14 +117,14 @@ export const skillTree: SkillBranch[] = [
             name: 'Fastify',
             tool: 'fastify',
             origins: ['autodidacte'],
-            note: 'Quand la performance compte : des API Node.js plus rapides, avec une validation par schémas.',
+            note: 'Quand la performance compte\u00a0: des API Node.js plus rapides, avec une validation par schémas.',
           },
           {
             id: 'spring',
             name: 'Java Spring',
             tool: 'spring',
             origins: ['hepl'],
-            note: 'Vu à la HEPL dans le cours de systèmes distribués : services web et API en Java.',
+            note: 'Vu à la HEPL dans le cours de systèmes distribués\u00a0: services web et API en Java.',
           },
           {
             id: 'php',
@@ -144,7 +144,7 @@ export const skillTree: SkillBranch[] = [
             name: 'Expo React Native',
             tool: 'expo',
             origins: ['autodidacte', 'terrain'],
-            note: 'Mes compétences React transposées au mobile : une seule base de code pour iOS et Android.',
+            note: 'Mes compétences React transposées au mobile\u00a0: une seule base de code pour iOS et Android.',
           },
           {
             id: 'flutter',
@@ -204,8 +204,8 @@ export const skillTree: SkillBranch[] = [
             id: 'prisma',
             name: 'Prisma',
             tool: 'prisma',
-            origins: ['autodidacte'],
-            note: 'Un ORM typé pour Node.js : le schéma de la base devient du code lisible et sûr.',
+            origins: ['autodidacte', 'terrain'],
+            note: 'Un ORM typé pour Node.js\u00a0: le schéma de la base devient du code lisible et sûr.',
           },
           {
             id: 'firebase',
@@ -259,7 +259,7 @@ export const skillTree: SkillBranch[] = [
             name: 'Git',
             tool: 'git',
             origins: ['hepl', 'mkit'],
-            note: 'Indispensable partout : en cours, en entreprise et sur chacun de mes projets.',
+            note: 'Indispensable partout\u00a0: en cours, en entreprise et sur chacun de mes projets.',
           },
           {
             id: 'docker',
@@ -349,7 +349,7 @@ export const skillTree: SkillBranch[] = [
             name: 'Premiere Pro',
             tool: 'premiere',
             origins: ['autodidacte', 'terrain'],
-            note: 'Le cœur de mon montage : rythme, coupes, étalonnage et mixage audio.',
+            note: 'Le cœur de mon montage\u00a0: rythme, coupes, étalonnage et mixage audio.',
           },
           {
             id: 'aftereffects',
