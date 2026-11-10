@@ -1,0 +1,175 @@
+---
+import LogoMark from '@/components/LogoMark.astro';
+import { site } from '@/data/site';
+
+interface Props {
+  overHero?: boolean;
+}
+
+const { overHero = false } = Astro.props;
+const home = Astro.url.pathname === '/' ? '' : '/';
+---
+
+<header class="header" data-header data-over-hero={overHero ? 'true' : undefined}>
+  <div class="header__left">
+    <a class="brand" href="/" aria-label={`${site.name}, accueil`}>
+      <LogoMark size={22} class="brand__mark" />
+      <span class="brand__name">{site.name}</span>
+    </a>
+    <span class="header__meta">{site.tagline}</span>
+    <span class="header__meta header__clock" aria-hidden="true">
+      BXL <time data-clock>--:--</time>
+    </span>
+  </div>
+  <nav class="header__nav" aria-label="Navigation principale">
+    <a class="pill pill--glass" href={`${home}#realisations`}>Réalisations</a>
+    <a class="pill pill--glass header__optional" href={`${home}#parcours`}>Parcours</a>
+    <a class="pill pill--dark" href={`${home}#contact`}>Me contacter</a>
+  </nav>
+</header>
+
+<style>
+  .header {
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    height: var(--header-h);
+    padding: 0 var(--gutter);
+    color: var(--ink);
+    transition: color 0.5s var(--ease-out);
+  }
+
+  .header::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 -24px;
+    z-index: -1;
+    background: linear-gradient(to bottom, rgb(255 255 255 / 0.92), rgb(255 255 255 / 0.6) 55%, rgb(255 255 255 / 0));
+    backdrop-filter: blur(6px);
+    mask-image: linear-gradient(to bottom, #000 60%, transparent);
+    opacity: 1;
+    transition: opacity 0.5s var(--ease-out);
+    pointer-events: none;
+  }
+
+  .header[data-over-hero='true']:not(.is-past) {
+    color: #fff;
+  }
+
+  .header[data-over-hero='true']:not(.is-past)::before {
+    opacity: 0;
+  }
+
+  .header__left {
+    display: flex;
+    align-items: center;
+    gap: clamp(16px, 3vw, 40px);
+    min-width: 0;
+    font-size: 0.8125rem;
+    letter-spacing: -0.01em;
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 550;
+    white-space: nowrap;
+  }
+
+  .brand :global(.brand__mark) {
+    transition: transform 0.6s var(--ease-out);
+  }
+
+  .brand:hover :global(.brand__mark) {
+    transform: rotate(-8deg) scale(1.06);
+  }
+
+  .header__meta {
+    white-space: nowrap;
+    opacity: 0.86;
+  }
+
+  .header__clock {
+    font-variant-numeric: tabular-nums;
+  }
+
+  .header__nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .header[data-over-hero='true']:not(.is-past) .pill--glass {
+    background: rgb(255 255 255 / 0.14);
+    color: #fff;
+    box-shadow:
+      0 1px 0 rgb(255 255 255 / 0.3) inset,
+      0 8px 24px -12px rgb(29 23 115 / 0.5);
+    backdrop-filter: blur(10px);
+  }
+
+  .header[data-over-hero='true']:not(.is-past) .pill--glass:hover {
+    background: rgb(255 255 255 / 0.24);
+  }
+
+  .header[data-over-hero='true']:not(.is-past) .pill--dark {
+    background: #fff;
+    color: var(--ink);
+  }
+
+  @media (max-width: 900px) {
+    .header__meta {
+      display: none;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .header__optional {
+      display: none;
+    }
+
+    .brand__name {
+      display: none;
+    }
+
+    .header .pill {
+      min-height: 36px;
+      padding: 0 14px;
+      font-size: 0.8125rem;
+    }
+  }
+</style>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-header]');
+  const clock = document.querySelector<HTMLTimeElement>('[data-clock]');
+
+  if (clock) {
+    const format = new Intl.DateTimeFormat('fr-BE', {
+      timeZone: 'Europe/Brussels',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+    const tick = () => {
+      clock.textContent = format.format(new Date());
+    };
+    tick();
+    setInterval(tick, 15_000);
+  }
+
+  if (header?.dataset.overHero) {
+    const hero = document.querySelector('[data-hero]');
+    if (hero) {
+      const observer = new IntersectionObserver(
+        ([entry]) => header.classList.toggle('is-past', !entry.isIntersecting),
+        { rootMargin: `-${header.offsetHeight}px 0px 0px 0px` },
+      );
+      observer.observe(hero);
+    }
+  }
+</script>
