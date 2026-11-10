@@ -13,6 +13,7 @@ import Footer from '@/components/Footer.astro';
 import { site } from '@/data/site';
 import { getProjects } from '@/data/projects';
 import sky from '@/assets/hero/sky.jpg';
+import portrait from '@/assets/about/portrait.jpg';
 import Vignette from '@/components/Vignette.astro';
 import clientsArt from '@/assets/sections/clients.jpg';
 import servicesArt from '@/assets/sections/services.jpg';
@@ -78,6 +79,7 @@ const jsonLd = [
     givenName: site.founder.givenName,
     familyName: site.founder.familyName,
     jobTitle: site.founder.jobTitle,
+    image: new URL(portrait.src, Astro.site).href,
     url: home,
     email: site.email,
     worksFor: { '@id': `${home}#studio` },
