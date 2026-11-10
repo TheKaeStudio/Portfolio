@@ -34,19 +34,56 @@ import { servicePills, services } from '@/data/services';
     {
       services.map((service, i) => (
         <li class="service">
-          <a class="service__row" href="#realisations" data-filter-link={service.category}>
-            <span class="service__index" data-index={String(i + 1).padStart(2, '0')} aria-hidden="true" />
-            <span class="service__body">
-              <h3 class="service__title">{service.title}</h3>
-              <span class="service__text">{service.description}</span>
-            </span>
-            <span class="service__arrow" aria-hidden="true">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                <path d="M7 17 17 7M9 7h8v8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </span>
-            <span class="sr-only">Voir les projets {service.title}</span>
-          </a>
+          <details class="service__details" name="services">
+            <summary class="service__row">
+              <span class="service__index" data-index={String(i + 1).padStart(2, '0')} aria-hidden="true" />
+              <span class="service__body">
+                <h3 class="service__title">{service.title}</h3>
+                <span class="service__text">{service.description}</span>
+              </span>
+              <span class="service__toggle" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                  <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                </svg>
+              </span>
+            </summary>
+            <div class="service__panel">
+              <div class="service__steps">
+                <p class="service__label">Comment je travaille</p>
+                <ol class="steps" role="list">
+                  {service.steps.map((step, n) => (
+                    <li class="step">
+                      <span class="step__n" data-index={String(n + 1).padStart(2, '0')} aria-hidden="true" />
+                      <span class="step__title">{step.title}</span>
+                      <span class="step__text">{step.text}</span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+              <div class="service__side">
+                <p class="service__label">Formules</p>
+                <ul class="formats" role="list">
+                  {service.formats.map((format) => (
+                    <li>{format}</li>
+                  ))}
+                </ul>
+                <p class="service__label">Ce que vous recevez</p>
+                <ul class="deliverables" role="list">
+                  {service.deliverables.map((item) => (
+                    <li>{item}</li>
+                  ))}
+                </ul>
+                <div class="service__actions">
+                  <a class="pill pill--primary" href="#contact">
+                    Parler de mon projet
+                  </a>
+                  <a class="pill" href="#realisations" data-filter-link={service.category}>
+                    Voir les projets
+                  </a>
+                </div>
+              </div>
+            </div>
+          </details>
         </li>
       ))
     }
@@ -81,6 +118,22 @@ import { servicePills, services } from '@/data/services';
     border-bottom: 1px solid var(--line);
   }
 
+  .service__details {
+    interpolate-size: allow-keywords;
+  }
+
+  .service__details::details-content {
+    height: 0;
+    overflow: clip;
+    transition:
+      height 0.5s var(--ease-out),
+      content-visibility 0.5s allow-discrete;
+  }
+
+  .service__details[open]::details-content {
+    height: auto;
+  }
+
   .service__row {
     position: relative;
     display: grid;
@@ -89,12 +142,17 @@ import { servicePills, services } from '@/data/services';
     gap: clamp(16px, 3vw, 32px);
     padding: clamp(24px, 3vw, 34px) clamp(8px, 1.5vw, 16px);
     border-radius: var(--radius);
-    transition:
-      background-color 0.45s var(--ease-out),
-      transform 0.45s var(--ease-out);
+    cursor: pointer;
+    list-style: none;
+    transition: background-color 0.45s var(--ease-out);
   }
 
-  .service__index::before {
+  .service__row::-webkit-details-marker {
+    display: none;
+  }
+
+  .service__index::before,
+  .step__n::before {
     content: attr(data-index);
   }
 
@@ -103,7 +161,7 @@ import { servicePills, services } from '@/data/services';
     padding-top: 0.45em;
     font-family: var(--font-mono);
     font-size: 1.125rem;
-    color: var(--blue-500);
+    color: var(--muted-2);
   }
 
   .service__body {
@@ -116,7 +174,6 @@ import { servicePills, services } from '@/data/services';
     font-weight: 500;
     letter-spacing: -0.035em;
     color: var(--ink);
-    transition: color 0.45s var(--ease-out);
   }
 
   .service__text {
@@ -126,35 +183,156 @@ import { servicePills, services } from '@/data/services';
     color: var(--ink-60);
   }
 
-  .service__arrow {
+  .service__toggle {
     display: grid;
     place-items: center;
     width: 44px;
     height: 44px;
     border-radius: 50%;
     background: var(--pill);
-    color: var(--blue-700);
+    color: var(--ink);
     transition:
       background-color 0.45s var(--ease-out),
       color 0.45s var(--ease-out),
       transform 0.45s var(--ease-out);
   }
 
-  .service__row:hover,
-  .service__row:focus-visible {
-    background: var(--sky-50);
+  .service__row:hover {
+    background: #f7f7f9;
   }
 
-  .service__row:hover .service__title,
-  .service__row:focus-visible .service__title {
-    color: var(--blue-700);
-  }
-
-  .service__row:hover .service__arrow,
-  .service__row:focus-visible .service__arrow {
-    background: linear-gradient(180deg, var(--blue-500), var(--blue-600));
+  .service__row:hover .service__toggle,
+  .service__details[open] .service__toggle {
+    background: var(--ink);
     color: #fff;
+  }
+
+  .service__details[open] .service__toggle {
     transform: rotate(45deg);
+  }
+
+  .service__panel {
+    display: grid;
+    grid-template-columns: 1.25fr 1fr;
+    gap: clamp(28px, 4vw, 56px);
+    padding: 8px clamp(8px, 1.5vw, 16px) clamp(32px, 4vw, 48px) calc(3.5rem + clamp(16px, 3vw, 32px) + clamp(8px, 1.5vw, 16px));
+  }
+
+  .service__label {
+    margin-bottom: 14px;
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .steps {
+    display: grid;
+    gap: 0;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .step {
+    position: relative;
+    display: grid;
+    grid-template-columns: 2.25rem 1fr;
+    column-gap: 12px;
+    padding-bottom: 18px;
+  }
+
+  .step::before {
+    content: '';
+    position: absolute;
+    left: 0.85rem;
+    top: 1.9rem;
+    bottom: 4px;
+    width: 1px;
+    background: var(--line);
+  }
+
+  .step:last-child::before {
+    display: none;
+  }
+
+  .step__n {
+    grid-row: span 2;
+    display: grid;
+    place-items: center;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 50%;
+    background: var(--pill);
+    font-family: var(--font-mono);
+    font-size: 0.9375rem;
+    color: var(--ink-80);
+  }
+
+  .step__title {
+    font-weight: 500;
+    letter-spacing: -0.015em;
+    color: var(--ink);
+  }
+
+  .step__text {
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    color: var(--ink-60);
+  }
+
+  .service__side {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .formats {
+    display: grid;
+    gap: 8px;
+    margin: 0 0 28px;
+    padding: 0;
+    list-style: none;
+  }
+
+  .formats li {
+    padding: 12px 16px;
+    border-radius: 14px;
+    background: var(--paper-2);
+    font-size: 0.9375rem;
+    line-height: 1.4;
+    color: var(--ink-80);
+  }
+
+  .deliverables {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 28px;
+    padding: 0;
+    list-style: none;
+  }
+
+  .deliverables li {
+    padding: 6px 12px;
+    border-radius: 999px;
+    box-shadow: 0 0 0 1px var(--line) inset;
+    font-size: 0.8125rem;
+    color: var(--ink-80);
+  }
+
+  .service__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: auto;
+  }
+
+  @media (max-width: 860px) {
+    .service__panel {
+      grid-template-columns: 1fr;
+      padding-left: clamp(8px, 1.5vw, 16px);
+    }
   }
 
   @media (max-width: 560px) {
@@ -169,10 +347,10 @@ import { servicePills, services } from '@/data/services';
     }
 
     .service__row {
-      grid-template-columns: 2.25rem 1fr;
+      grid-template-columns: 2.25rem 1fr auto;
     }
 
-    .service__arrow {
+    .service__text {
       display: none;
     }
   }
