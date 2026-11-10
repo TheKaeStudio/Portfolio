@@ -82,6 +82,12 @@ To add a video preview that plays when hovering the project card, drop a short, 
 
 The skills shown in the background section and in the skill tree live in `src/data/skills.ts`: four branches, their groups, and for each skill where it was learned (`origins`) and a short note. Projects using a tool are linked automatically from their `stack`; skills without a tool can list `projects` by slug.
 
+## Client reviews
+
+Reviews live in `src/data/reviews.ts`. Each one is linked to a project by its slug: it appears in the "Avis clients" section of the home page with a link to the case study, and on the project page itself.
+
+Entries marked `placeholder: true` are examples to rewrite. They show up with an "Exemple" badge in `npm run dev` only and are left out of production builds, so nothing unfinished goes live. Once a real review is written, remove `placeholder: true`. The section is hidden while there is no real review, and the section numbers adjust automatically.
+
 ## SEO
 
 - `title`, `description`, Open Graph and Twitter tags generated for every page
