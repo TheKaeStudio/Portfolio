@@ -1,0 +1,28 @@
+---
+import SectionHead from '@/components/SectionHead.astro';
+---
+
+<section class="section philosophy" aria-labelledby="philosophy-title">
+  <slot name="visual" />
+  <div class="column centered">
+    <SectionHead index="04" label="La philosophie Kae" id="philosophy-title" />
+    <p class="statement" data-reveal>
+      The Kae Studio est né d’une passion. <span class="soft">Grandir n’a jamais été l’objectif.</span>
+    </p>
+    <div class="prose philosophy__body" data-reveal>
+      <p>
+        Je garde volontairement une structure légère : un seul interlocuteur, du premier croquis à la mise en ligne.
+        Chaque projet part d’une page blanche et des besoins réels de vos utilisateurs, jamais d’un template.
+      </p>
+      <p>
+        Le design sans le code reste une image, le code sans le design reste un outil. <span class="soft">C’est en maîtrisant les deux que je livre des produits complets.</span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .philosophy__body {
+    margin-top: clamp(28px, 4vw, 44px);
+  }
+</style>
