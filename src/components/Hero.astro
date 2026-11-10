@@ -132,6 +132,7 @@ const coords = `${latitude.toFixed(4)}° N, ${longitude.toFixed(4)}° E`;
   }
 
   .hero__title {
+    --name-size: clamp(76px, 15vw, 228px);
     position: relative;
     display: grid;
     font-family: 'Gilda Display', var(--font-serif);
@@ -158,7 +159,7 @@ const coords = `${latitude.toFixed(4)}° N, ${longitude.toFixed(4)}° E`;
   }
 
   .hero__name {
-    font-size: clamp(76px, 15vw, 228px);
+    font-size: var(--name-size);
     white-space: nowrap;
   }
 
@@ -184,7 +185,7 @@ const coords = `${latitude.toFixed(4)}° N, ${longitude.toFixed(4)}° E`;
     top: -0.32em;
     width: 2.3em;
     height: 0.6em;
-    font-size: clamp(76px, 15vw, 228px);
+    font-size: var(--name-size);
     transform: rotate(-12deg);
     pointer-events: none;
   }
@@ -351,6 +352,18 @@ const coords = `${latitude.toFixed(4)}° N, ${longitude.toFixed(4)}° E`;
   @media (max-width: 640px) {
     .hero__sky {
       inset: -4% 0 -8%;
+    }
+
+    .hero__title {
+      --name-size: min(96px, calc((100vw - 2 * var(--gutter)) / 5.1));
+    }
+
+    .hero__the {
+      font-size: calc(var(--name-size) * 0.42);
+    }
+
+    .hero__subtitle {
+      font-size: min(26px, calc((100vw - 2 * var(--gutter)) / 10.6));
     }
 
     .hero__content {
