@@ -1,0 +1,61 @@
+---
+import Base from '@/layouts/Base.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import AppIcon from '@/components/AppIcon.astro';
+---
+
+<Base title="Page introuvable" description="Cette page n’existe pas ou a été déplacée." noindex>
+  <Header slot="header" />
+  <section class="lost">
+    <AppIcon size={72} />
+    <p class="lost__code">404</p>
+    <h1 class="lost__title serif">Perdu dans les nuages.</h1>
+    <p class="lost__text">Cette page n’existe pas ou a été déplacée.</p>
+    <div class="lost__actions">
+      <a class="pill pill--dark pill--lg" href="/">Retour à l’accueil</a>
+      <a class="pill pill--lg" href="/#realisations">Voir les réalisations</a>
+    </div>
+  </section>
+  <Footer slot="footer" />
+</Base>
+
+<style>
+  .lost {
+    display: grid;
+    justify-items: center;
+    gap: 14px;
+    min-height: 82svh;
+    align-content: center;
+    padding: calc(var(--header-h) + 40px) var(--gutter) 40px;
+    text-align: center;
+    background: radial-gradient(80% 60% at 50% 0%, var(--lavender), rgb(236 235 255 / 0) 70%);
+  }
+
+  .lost__code {
+    margin-top: 36px;
+    font-family: var(--font-mono);
+    font-size: 1.25rem;
+    color: var(--indigo-600);
+  }
+
+  .lost__title {
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    font-weight: 400;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+  }
+
+  .lost__text {
+    color: var(--muted);
+  }
+
+  .lost__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 20px;
+  }
+</style>
