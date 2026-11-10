@@ -5,6 +5,8 @@ summary: Logo, identité visuelle et supports print pour un parking sécurisé �
 categories: [graphisme]
 deliverables: [Logo, Identité visuelle, Cartes & flyers]
 year: '2026'
+industry: [Parking, Mobilité]
+stack: [illustrator, photoshop]
 order: 10
 cover: ./cover.jpg
 coverAlt: Carte Outside Park en situation, logo sur fond bleu et flyer « Scan & Save »

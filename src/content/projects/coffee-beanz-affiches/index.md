@@ -5,7 +5,12 @@ summary: Affiches A2 et visuels produits pour les nouvelles boissons protéinée
 categories: [graphisme]
 deliverables: [Affiches A2, Visuels produits, Retouche]
 year: '2026'
+industry: [Restauration, Coffee shops]
+stack: [photoshop]
 order: 9
+icon:
+  src: ../coffee-beanz-app/icone.png
+  background: '#07080f'
 cover: ./cover.jpg
 coverAlt: Affiche Lait Protéiné en situation et affiche Nouvelles Boissons Protéinées
 gallery:

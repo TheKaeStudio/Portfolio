@@ -1,6 +1,7 @@
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
+import { toolIds } from './data/tools';
 
 const categories = z.enum(['ui-ux', 'developpement', 'montage-video', 'graphisme']);
 
@@ -18,7 +19,16 @@ const projects = defineCollection({
       categories: z.array(categories).min(1),
       deliverables: z.array(z.string()).min(1),
       year: z.string(),
+      industry: z.array(z.string()).min(1),
+      stack: z.array(z.enum(toolIds)).default([]),
       order: z.number(),
+      icon: z
+        .object({
+          src: image(),
+          background: z.string().default('#ffffff'),
+          padded: z.boolean().default(false),
+        })
+        .optional(),
       cover: image(),
       coverAlt: z.string(),
       preview: z.string().optional(),

@@ -5,7 +5,12 @@ summary: Identité visuelle complète et site web pour un Employer of Record int
 categories: [ui-ux, developpement, graphisme]
 deliverables: [Identité visuelle, Charte graphique, Site web]
 year: '2025'
+industry: [Ressources humaines, Employer of Record]
+stack: [illustrator, figma, wordpress, elementor]
 order: 3
+icon:
+  src: ../../../assets/clients/mbremote-icon.svg
+  padded: true
 cover: ./cover.jpg
 coverAlt: Le site MBRemote sur ordinateur et sur mobile, avec l’anneau vert de la marque
 links:

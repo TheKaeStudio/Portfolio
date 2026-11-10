@@ -5,6 +5,8 @@ summary: Logo et identité visuelle d’une entreprise de rénovation et constru
 categories: [graphisme]
 deliverables: [Logo, Identité visuelle, Cartes de visite]
 year: '2026'
+industry: [Rénovation, Construction]
+stack: [illustrator]
 order: 12
 cover: ./cover.jpg
 coverAlt: Cartes de visite UA Rénov et déclinaisons du monogramme UA

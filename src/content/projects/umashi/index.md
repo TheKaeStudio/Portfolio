@@ -5,7 +5,12 @@ summary: Étiquettes et visuels packaging pour une marque de matcha japonais, du
 categories: [graphisme]
 deliverables: [Packaging, Étiquettes, Pictogrammes]
 year: '2026'
+industry: [Alimentation, Thé matcha]
+stack: [illustrator, photoshop]
 order: 5
+icon:
+  src: ../../../assets/clients/umashi.svg
+  padded: true
 cover: ./cover.jpg
 coverAlt: Sachet de matcha Umashi et ses étiquettes roses
 gallery:

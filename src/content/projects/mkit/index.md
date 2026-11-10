@@ -5,6 +5,8 @@ summary: Reels et visuels pour les réseaux sociaux d’une entreprise informati
 categories: [montage-video, graphisme]
 deliverables: [Reels, Posts, Ligne éditoriale]
 year: 2023 – 2026
+industry: [Informatique, Services IT]
+stack: [premiere, aftereffects, photoshop, illustrator]
 order: 8
 cover: ./cover.jpg
 coverAlt: Reels et posts MkIT sur fond sombre et bleu

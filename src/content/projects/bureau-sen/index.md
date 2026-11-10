@@ -5,6 +5,8 @@ summary: Site web et simulateur de crédit pour un courtier en assurances et cr�
 categories: [ui-ux, developpement]
 deliverables: [Site web, Simulateur de crédit, SEO local]
 year: '2025'
+industry: [Assurances, Crédits]
+stack: [figma, wordpress, elementor, php, javascript]
 order: 7
 cover: ./cover.jpg
 coverAlt: Le simulateur de crédit de Bureau Sen sur ordinateur et sur mobile

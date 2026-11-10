@@ -5,7 +5,12 @@ summary: "Application mobile de Coffee Beanz : commande à emporter, carte des 
 categories: [ui-ux, developpement]
 deliverables: [Application mobile, UI/UX, Développement]
 year: '2026'
+industry: [Restauration, Coffee shops]
+stack: [figma, expo, photoshop]
 order: 1
+icon:
+  src: ./icone.png
+  background: '#07080f'
 cover: ./cover.jpg
 coverAlt: "Trois écrans de l’application Coffee Beanz : fiche produit, accueil et programme de points"
 gallery:

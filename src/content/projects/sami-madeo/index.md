@@ -5,6 +5,8 @@ summary: Montage de vidéos YouTube long format et de reels pour un créateur de
 categories: [montage-video]
 deliverables: [YouTube long format, Reels, Shorts]
 year: '2025'
+industry: [Création de contenu, Automobile]
+stack: [premiere, aftereffects]
 order: 4
 cover: ./cover.jpg
 coverAlt: Miniature YouTube « 2000 € » avec une Mazda MX-5 et un reel sur téléphone

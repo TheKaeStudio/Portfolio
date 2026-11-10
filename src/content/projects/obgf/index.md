@@ -5,7 +5,12 @@ summary: Design du site vitrine d’un spécialiste des châssis, vitrages, port
 categories: [ui-ux, developpement]
 deliverables: [Site vitrine, UI/UX, Webdesign]
 year: '2026'
+industry: [Menuiserie, Châssis et vérandas]
+stack: [figma]
 order: 6
+icon:
+  src: ../../../assets/clients/obgf.svg
+  padded: true
 cover: ./cover.jpg
 coverAlt: Plusieurs sections du site OBGF disposées en colonnes inclinées
 gallery:

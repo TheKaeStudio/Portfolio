@@ -5,6 +5,8 @@ summary: Site web et simulateur de salaire pour une société de portage salaria
 categories: [ui-ux, developpement]
 deliverables: [Site web, Simulateur, UI/UX]
 year: '2025'
+industry: [Portage salarial, International]
+stack: [figma, wordpress, elementor, javascript]
 order: 2
 cover: ./cover.jpg
 coverAlt: Le simulateur de salaire Varynia sur ordinateur et la page d’accueil sur mobile

@@ -5,6 +5,8 @@ summary: "Montage de reels Instagram pour une entreprise de débouchage à Lièg
 categories: [montage-video]
 deliverables: [Reels, Réseaux sociaux, Sous-titres]
 year: '2026'
+industry: [Débouchage, Assainissement]
+stack: [premiere, aftereffects]
 order: 11
 cover: ./cover.jpg
 coverAlt: Trois reels Débouch24 affichés sur des téléphones sur fond orange
