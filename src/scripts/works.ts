@@ -2,7 +2,7 @@ type Size = 'large' | 'small' | 'full';
 
 const grid = document.querySelector<HTMLElement>('[data-works]');
 const group = document.querySelector<HTMLElement>('[data-filters]');
-const status = document.querySelector<HTMLElement>('[data-works-status]');
+const statusEl = document.querySelector<HTMLElement>('[data-works-status]');
 
 const sizesFor = (count: number): Size[] => {
   const sizes: Size[] = [];
@@ -36,9 +36,9 @@ if (grid && group) {
     for (const button of buttons) {
       button.setAttribute('aria-pressed', String(button.dataset.filter === filter));
     }
-    if (status) {
+    if (statusEl) {
       const label = filter === 'all' ? 'tous les projets' : labels.get(filter);
-      status.textContent = `${visible.length} projet${visible.length > 1 ? 's' : ''} affiché${visible.length > 1 ? 's' : ''} : ${label}`;
+      statusEl.textContent = `${visible.length} projet${visible.length > 1 ? 's' : ''} affiché${visible.length > 1 ? 's' : ''} : ${label}`;
     }
   };
 
@@ -85,3 +85,5 @@ if (grid && group) {
     }
   }
 }
+
+export {};

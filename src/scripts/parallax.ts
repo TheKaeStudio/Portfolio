@@ -28,3 +28,5 @@ if (items.length && !reduce.matches) {
   );
   update();
 }
+
+export {};

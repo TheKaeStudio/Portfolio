@@ -60,3 +60,5 @@ if (blocks.length && !reduce) {
   window.addEventListener('resize', update, { passive: true });
   update();
 }
+
+export {};
